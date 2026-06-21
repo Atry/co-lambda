@@ -91,8 +91,9 @@
 % setting these booleans before \input{co-lambda}.  The defaults below
 % include everything, so the full build (preprint.tex) sets nothing;
 % submission.tex clears the appendices, supplement.tex clears the body.
-% The single bibliography lives at the end and is always emitted, since
-% both the main matter and the appendices cite.
+% The single bibliography is emitted exactly once, after the main matter and
+% before the appendix, since both cite it. In the appendix-only build (no main
+% matter) it instead follows the appendix; see the two guarded copies below.
 \makeatletter
 \@ifundefined{ifColambdaBody}{\newif\ifColambdaBody\ColambdaBodytrue}{}
 \@ifundefined{ifColambdaAppendix}{\newif\ifColambdaAppendix\ColambdaAppendixtrue}{}
@@ -708,6 +709,14 @@ The construction is not specific to the $\lambda$-calculus but parametric in the
 
 \fi % end \ifColambdaBody (the main matter, Sections 1-6)
 
+% References follow the main matter and precede the appendix. This copy fires
+% whenever the main matter is present (preprint, submission); the appendix-only
+% build emits its copy after the appendix instead.
+\ifColambdaBody
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
+\fi
+
 \ifColambdaAppendix
 \appendix
 
@@ -1154,7 +1163,11 @@ The solver's run on $\Omega$, recorded from the interpreter and parallel to the 
 \input{generated/omega-trace}
 \fi % end \ifColambdaAppendix
 
+% Appendix-only build (supplement.tex): no main matter ran above, so emit the
+% bibliography here, after the appendix.
+\ifColambdaBody\else
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{references}
+\fi
 
 \end{document}
