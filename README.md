@@ -6,7 +6,7 @@
 ![License: MIT](https://img.shields.io/pypi/l/tablambda)
 
 The artifact for the paper *Cyclic Graphs and Memoization in Pure
-$\lambda$-Calculus*. It is a pure lambda-calculus interpreter and compiler in
+λ-Calculus*. It is a pure lambda-calculus interpreter and compiler in
 which programs that loop on themselves or repeat work just run: you write ordinary
 pure lambda terms and get cyclic and infinite data structures with no added
 recursion construct, automatic memoization and dynamic programming with no
