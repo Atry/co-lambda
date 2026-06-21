@@ -113,7 +113,7 @@ def test_defun_edit_distance_matches_reference() -> None:
     """The defunctionalized edit distance agrees with the textbook reference (tabling preserved)."""
     import sys
 
-    from tablambda._defunctionalize import defunctionalize, load, reify
+    from tablambda._defunctionalize import defunctionalize, load
     from tablambda._pyast import binnat_to_int
 
     from tablambda_examples._editdistance import edit_distance_term
@@ -123,7 +123,7 @@ def test_defun_edit_distance_matches_reference() -> None:
     previous = sys.getrecursionlimit()
     sys.setrecursionlimit(max(previous, 100_000))
     try:
-        result = binnat_to_int(reify(value))
+        result = binnat_to_int(value)
     finally:
         sys.setrecursionlimit(previous)
     assert result == _edit_distance_reference(left, right)

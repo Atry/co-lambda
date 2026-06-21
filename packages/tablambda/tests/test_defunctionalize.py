@@ -16,7 +16,6 @@ from tablambda._defunctionalize import (
     defunctionalize,
     defunctionalize_and_load,
     load,
-    reify,
 )
 from tablambda._dsl import app, build, lam
 from tablambda._prelude import (
@@ -67,7 +66,8 @@ class Cls:
 def test_identity():
     source = defunctionalize(build(IDENTITY))
     value = load(source)
-    sentinel = object()
+    # Markers are free-variable Nodes (the unified value domain), not bare objects.
+    sentinel = make_var(900)
     result = Thunk(value, sentinel)
     assert result.weak_head_normal_form is sentinel
 
@@ -75,7 +75,7 @@ def test_identity():
 def test_kestrel():
     source = defunctionalize(build(KESTREL))
     value = load(source)
-    a, b = object(), object()
+    a, b = make_var(900), make_var(901)
     result = Thunk(Thunk(value, a), b)
     assert result.weak_head_normal_form is a
 
@@ -83,7 +83,7 @@ def test_kestrel():
 def test_church_zero():
     node = build(lam(lambda s: lam(lambda z: z)))
     value = defunctionalize_and_load(node)
-    s, z = object(), object()
+    s, z = make_var(900), make_var(901)
     result = Thunk(Thunk(value, s), z)
     assert result.weak_head_normal_form is z
 
@@ -91,7 +91,7 @@ def test_church_zero():
 def test_church_one():
     node = build(lam(lambda s: lam(lambda z: app(s, z))))
     value = defunctionalize_and_load(node)
-    marker = object()
+    marker = make_var(900)
     identity_fn = defunctionalize_and_load(build(IDENTITY))
     result = Thunk(Thunk(value, identity_fn), marker)
     assert result.weak_head_normal_form is marker
@@ -104,21 +104,35 @@ def test_capture_kx():
     node = build(KESTREL)
     source = defunctionalize(node)
     assert "@interned" in source
-    assert "cap_0: Lambda" in source
+    assert "cap_0: Closure" in source
     assert "__call__" in source
 
 
-def test_s_combinator_capture(snapshot: SnapshotAssertion):
+@pytest.mark.parametrize(
+    "tag",
+    [
+        pytest.param(
+            t,
+            id=f"s_combinator_source_{t}",
+            marks=pytest.mark.skipif(
+                _python_tag() != t, reason=f"generated source is specific to {t}"
+            ),
+        )
+        for t in ("py311", "py312", "py313")
+    ],
+)
+def test_s_combinator_capture(tag: str, snapshot: SnapshotAssertion):
     """`\\x.\\y.\\z. x z (y z)` (S combinator) captures correctly.
 
-    The generated class names are content hashes that legitimately differ between Python versions
-    (``ast.unparse`` formatting and the ``ast.dump`` the hash digests both vary, e.g. ``type_params``
-    on 3.12+), which is why generated artifacts are tagged by ``_python_tag()``. The snapshot is
-    keyed the same way so each interpreter compares against its own expected output.
+    The generated class names are content hashes that legitimately differ between Python versions:
+    the hash digests ``ast.dump``, whose output gained ``type_params`` on 3.12+, so the same closure
+    gets a different ``vg_<hash>`` name (and hence sort order, and source) per version. One snapshot is
+    committed per version, and each version's case is ``skipif``-ed to its own interpreter, so the two
+    non-current cases are skipped (not unused) rather than failing the session.
     """
     s_comb = build(lam(lambda x: lam(lambda y: lam(lambda z: app(app(x, z), app(y, z))))))
     source = defunctionalize(s_comb)
-    assert source == snapshot(name=f"s_combinator_source_{_python_tag()}")
+    assert source == snapshot
 
 
 # --- 4. content-addressability ------------------------------------------------------------------
@@ -144,7 +158,7 @@ def test_interned_thunks_share_identity():
 
 def _class_names(source: str) -> "list[str]":
     import re
-    return re.findall(r"^class (\w+):", source, re.M)
+    return re.findall(r"^class (\w+)\(Closure\):", source, re.M)
 
 
 def test_coarser_tabling_merges_structurally_equal_closures():
@@ -163,7 +177,7 @@ def test_coarser_tabling_merges_structurally_equal_closures():
     # The single-field identity-capture closure appears once as a definition but is referenced twice.
     single_capture = [
         name for name in names
-        if f"class {name}:" in source and source.count(f"{name}(") >= 2
+        if f"class {name}(Closure):" in source and source.count(f"{name}(") >= 2
     ]
     assert single_capture, "expected a shared closure class referenced at multiple call sites"
 
@@ -199,23 +213,26 @@ def test_omega_stabilises_at_bottom():
         assert value.weak_head_normal_form is _BOTTOM
 
 
-# --- 7. cross-reference: reify matches interpreter ---------------------------------------------
+# --- 7. cross-reference: a compiled value reads back to the same normal form as the interpreter ---
 
 def _interpreter_normal_form(node: Node, depth: int = 0) -> Node:
-    """Read the interpreter's normal form of a closed term (NbE readback).
+    """Read the normal form of a closed term (NbE readback), for an interpreter term OR a compiled
+    value: both are ``Node``s now, so a ``Lam`` and a ``Closure`` are read the same way, by probing
+    under a fresh binder.
 
     Probe variables are created as ``make_var(level)``; quoting converts level ``l`` under
     ``depth`` binders to de Bruijn index ``depth - l - 1``.
     """
     from tablambda._ast import App, Lam, Var
+    from tablambda._defun_runtime import Closure
 
     whnf = node.weak_head_normal_form
     match whnf:
         case Var(index=level):
             return make_var(depth - level - 1)
-        case Lam():
+        case Lam() | Closure():
             probe = make_var(depth)
-            applied = make_app(node, probe)
+            applied = make_app(whnf, probe)
             return make_lam(_interpreter_normal_form(applied, depth + 1))
         case App(function=function, argument=argument):
             return make_app(
@@ -235,9 +252,28 @@ _CROSS_CHECK_TERMS = [
 
 
 @pytest.mark.parametrize("name, term", _CROSS_CHECK_TERMS, ids=[t[0] for t in _CROSS_CHECK_TERMS])
-def test_reify_matches_interpreter(name: str, term):
+def test_compiled_value_matches_interpreter(name: str, term):
     node = build(term)
     value = defunctionalize_and_load(node)
-    reified = reify(value)
+    compiled_nf = _interpreter_normal_form(value)
     interp_nf = _interpreter_normal_form(node)
-    assert reified is interp_nf
+    assert compiled_nf is interp_nf
+
+
+# --- 8. mixed evaluation: interpreter and compiled values run in one graph -----------------------
+
+def test_interpreter_app_applies_compiled_closure():
+    """An interpreter ``App`` whose function is a compiled ``Closure`` applies it directly: the
+    compiled identity returns the interpreter ``Lam`` it is given, with no reify boundary."""
+    identity_closure = defunctionalize_and_load(build(IDENTITY))
+    argument = build(KESTREL)
+    mixed = make_app(identity_closure, argument)
+    assert mixed.weak_head_normal_form is argument
+
+
+def test_compiled_thunk_drives_interpreter_lam():
+    """A compiled ``Thunk`` whose callee forces to an interpreter ``Lam`` keeps reducing: the
+    interpreter identity returns the compiled ``Closure`` it is given."""
+    compiled_argument = defunctionalize_and_load(build(KESTREL))
+    result = Thunk(build(IDENTITY), compiled_argument).weak_head_normal_form
+    assert result is compiled_argument

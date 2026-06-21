@@ -146,7 +146,6 @@ def _measure_editdistance(approach: str, input_key: str) -> "tuple[float, float,
         return seconds, peak_mb, tabled, str(result[0])
 
     from tablambda._defun_runtime import Thunk
-    from tablambda._defunctionalize import reify
 
     function = _import_compiled("editdistance")  # the compiled app, imported (no compilation)
     left_name, right_name = _EDIT_INPUTS[input_key]
@@ -155,7 +154,7 @@ def _measure_editdistance(approach: str, input_key: str) -> "tuple[float, float,
 
     def run() -> None:
         applied = Thunk(Thunk(function, compiled_left), compiled_right).weak_head_normal_form
-        result.append(binnat_to_int(reify(applied)))
+        result.append(binnat_to_int(applied))
 
     seconds, peak_mb, tabled = _measure(run, _all_defun_tabled)
     return seconds, peak_mb, tabled, str(result[0])

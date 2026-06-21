@@ -23,7 +23,7 @@ import contextlib
 import hashlib
 import struct
 
-from tablambda._ast import App, Lam, Native, Node, Var, make_app, make_lam, make_var
+from tablambda._ast import App, Lam, Node, Var, make_app, make_lam, make_var
 from tablambda._dsl import Builder, app, build, lam
 from tablambda._codec import church
 from tablambda._prelude import SCOTT_NIL
@@ -78,8 +78,6 @@ def _merkle_hash(node: Node) -> int:
             data = struct.pack(">BQ", 1, _merkle_hash(body))
         case App(function=function, argument=argument):
             data = struct.pack(">BQQ", 2, _merkle_hash(function), _merkle_hash(argument))
-        case Native():
-            data = struct.pack(">BQ", 3, id(node) & 0xFFFFFFFFFFFFFFFF)
         case _:
             raise ValueError(f"cannot hash {node!r}")
     result = int.from_bytes(hashlib.sha256(data).digest()[:8], "big")

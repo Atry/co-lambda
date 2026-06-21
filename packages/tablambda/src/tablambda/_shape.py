@@ -2,8 +2,9 @@
 
 ``weak_head_normalize`` exposes a node's outermost constructor after weak head reduction (it stops
 at the outermost constructor and does not reduce under ``lambda``). A deterministic calculus
-exposes exactly one constructor at a node, so the value is a single node
-(``Var``/``Lam``/``App``/``Native``) or ``BOTTOM`` (no constructor), never a set.
+exposes exactly one constructor at a node, so the value is a single node (an interpreter
+``Var``/``Lam``/``App`` or a compiled ``Closure``) or ``BOTTOM`` (no constructor), never a set. A
+compiled ``Thunk`` (a redex) forces through ``apply_value``, the application path shared with ``App``.
 ``compute_weak_head_normal_form`` is the per-node clause body; ``Node.weak_head_normal_form`` wraps
 it in a ``fixpoint_cached_property`` resolved as a least fixpoint from ``BOTTOM`` upward. Because
 nodes are interned, a node reached again during its own computation is caught by a pointer test; an
@@ -25,13 +26,13 @@ from tablambda._ast import (
     BOTTOM,
     App,
     Lam,
-    Native,
     Node,
-    ShapeBottom,
+    WeakHeadBottom,
     Var,
-    make_native,
+    make_app,
     substitute,
 )
+from tablambda._defun_runtime import Closure, Thunk
 
 
 class ReductionBudgetExceeded(RuntimeError):
@@ -70,155 +71,59 @@ def _consume_redex() -> None:
     budget.remaining -= 1
 
 
-def weak_head_normalize(node: Node) -> Node | ShapeBottom:
+def weak_head_normalize(node: Node) -> Node | WeakHeadBottom:
     """The weak head normal form of ``node``: its outermost constructor, or ``BOTTOM`` (none).
 
     Typed via ``Node.weak_head_normal_form`` (a ``fixpoint_cached_property`` typed as ``object``).
     """
-    return cast("Node | ShapeBottom", node.weak_head_normal_form)
+    return cast("Node | WeakHeadBottom", node.weak_head_normal_form)
 
 
-def compute_weak_head_normal_form(node: Node) -> Node | ShapeBottom:
+def apply_value(head: Node, argument: Node) -> Node | WeakHeadBottom:
+    """Apply a weak-head VALUE ``head`` to ``argument``, returning the node to continue normalizing
+    (or ``BOTTOM``). ``head`` must already be in weak head normal form, so it is never a ``Thunk``.
+
+    This is the one application path shared by the interpreter's ``App`` clause and the compiled
+    ``Thunk.force``, so an interpreter ``Lam`` and a compiled ``Closure`` apply uniformly and the two
+    worlds run mixed: firing a ``Lam`` substitutes (consuming the reduction budget), calling a
+    ``Closure`` runs the compiled body, and a neutral head builds the application node.
+    """
+    match head:
+        case Lam(body=lambda_body):
+            _consume_redex()
+            return substitute(lambda_body, depth=0, argument=argument)
+        case Closure():
+            return head(argument)
+        case Var() | App():
+            return make_app(head, argument)
+        case WeakHeadBottom.BOTTOM:
+            return BOTTOM
+        case _:
+            raise TypeError(f"Cannot apply non-value {head!r}")
+
+
+def compute_weak_head_normal_form(node: Node) -> Node | WeakHeadBottom:
     """The per-node clause body of weak head normalization; single-valued, no aggregate."""
     match node:
         case Var():
             return node
         case Lam():
             return node
-        case Native(run=run, arity=arity, collected=collected):
-            if len(collected) == arity:
-                return weak_head_normalize(run(*collected))
+        case Closure():
             return node
+        case Thunk():
+            return node.force()
         case App(function=function, argument=argument):
             head = weak_head_normalize(function)
             match head:
-                case Lam(body=lambda_body):
-                    _consume_redex()
-                    return weak_head_normalize(substitute(lambda_body, depth=0, argument=argument))
-                case Native(run=run, arity=arity, collected=collected):
-                    saturated = (*collected, argument)
-                    if len(saturated) == arity:
-                        return weak_head_normalize(run(*saturated))
-                    return make_native(run, arity, saturated)
                 case Var() | App():
                     return node
-                case ShapeBottom.BOTTOM:
+                case WeakHeadBottom.BOTTOM:
                     return BOTTOM
                 case _:
-                    raise TypeError(f"Unknown head {head!r}")
+                    applied = apply_value(head, argument)
+                    if applied is BOTTOM:
+                        return BOTTOM
+                    return weak_head_normalize(applied)
         case _:
             raise TypeError(f"Unknown node {node!r}")
-
-
-def head_normalize(node: Node) -> Node | ShapeBottom:
-    """The head normal form of ``node`` (the Boehm reading): its outermost constructor after head
-    reduction, which reduces under ``lambda`` to expose the head, or ``BOTTOM`` (no head normal form).
-
-    Typed via ``Node.head_normal_form`` (a ``fixpoint_cached_property`` typed as ``object``).
-    """
-    return cast("Node | ShapeBottom", node.head_normal_form)
-
-
-def compute_head_normal_form(node: Node) -> Node | ShapeBottom:
-    """The per-node clause body of head normalization (the Boehm reading).
-
-    The only difference from weak head normalization is the ``Lam`` clause: a ``lambda`` whose body
-    has no head normal form is itself meaningless (``BOTTOM``), because head reduction continues under
-    the ``lambda``. The ``App`` clause is identical (a head redex fires on the weak head of the
-    function, whether or not its body has a head normal form).
-    """
-    match node:
-        case Var():
-            return node
-        case Lam(body=body):
-            if head_normalize(body) is BOTTOM:
-                return BOTTOM
-            return node
-        case Native(run=run, arity=arity, collected=collected):
-            if len(collected) == arity:
-                return head_normalize(run(*collected))
-            return node
-        case App(function=function, argument=argument):
-            head = weak_head_normalize(function)
-            match head:
-                case Lam(body=lambda_body):
-                    _consume_redex()
-                    return head_normalize(substitute(lambda_body, depth=0, argument=argument))
-                case Native(run=run, arity=arity, collected=collected):
-                    saturated = (*collected, argument)
-                    if len(saturated) == arity:
-                        return head_normalize(run(*saturated))
-                    return make_native(run, arity, saturated)
-                case Var() | App():
-                    return node
-                case ShapeBottom.BOTTOM:
-                    return BOTTOM
-                case _:
-                    raise TypeError(f"Unknown head {head!r}")
-        case _:
-            raise TypeError(f"Unknown node {node!r}")
-
-
-def normalize_to_depth(node: Node, depth: int) -> Node | ShapeBottom:
-    """Depth-bounded call-by-name beta normalization: the compiler's reference semantics.
-
-    This is the fusion of weak head normalization and combinatory (SK) reduction. From weak head
-    normalization it keeps call-by-name beta, where the argument is inserted by reference (not
-    reduced), so the caller's tabling folds both an unproductive cycle (``Omega`` to bottom) and a
-    productive one (``Y (cons 0)`` to a finite cyclic graph); a fully lazy SK reduction cannot fold,
-    because its ``S`` rule grows the argument into suspensions that never re-form the cyclic node, and
-    reducing them first (call by value) diverges on a productive cycle. From combinatory reduction it
-    keeps the motivation to avoid copying the whole tree: it fires at most ``depth`` beta contractions
-    per application position and leaves a still-unfired redex ``App(Lam(body), argument)`` (the
-    let-stub ``(\\a. body) argument``) as a guarded value, rather than substituting an unbounded tree.
-
-    A ``depth`` large enough reproduces the Levy-Longo weak head normal form, ``depth == 1`` is the
-    one-layer reading, and ``depth == 0`` reads the term raw. It never consults the cached
-    ``weak_head_normal_form`` (the unbounded least fixpoint), so the cached semantics is untouched;
-    each contraction goes through ``substitute`` (which returns closed subterms by reference and builds
-    with the interning ``make_*``), so closed cyclic data is shared and structurally identical results
-    fold at every reduced layer, the per-layer tabling guarantee that lets a cycle closing within the
-    depth fold and halt. ``depth`` bounds firings, so every head reduction terminates regardless of
-    rationality; the readout's tree is folded by the caller (``render`` tables re-entrant closed
-    nodes), so a rational behaviour whose cycle closes within the depth reads as a finite cyclic graph.
-    """
-    match node:
-        case Var():
-            return node
-        case Lam():
-            return node
-        case Native(run=run, arity=arity, collected=collected):
-            if len(collected) == arity:
-                return normalize_to_depth(run(*collected), depth)
-            return node
-        case App(function=function, argument=argument):
-            head = normalize_to_depth(function, depth)
-            match head:
-                case Lam(body=lambda_body):
-                    if depth <= 0:
-                        return node
-                    fired = substitute(lambda_body, depth=0, argument=argument)
-                    return normalize_to_depth(fired, depth - 1)
-                case Native(run=run, arity=arity, collected=collected):
-                    saturated = (*collected, argument)
-                    if len(saturated) == arity:
-                        return normalize_to_depth(run(*saturated), depth)
-                    return make_native(run, arity, saturated)
-                case Var() | App():
-                    return node
-                case ShapeBottom.BOTTOM:
-                    return BOTTOM
-                case _:
-                    raise TypeError(f"Unknown head {head!r}")
-        case _:
-            raise TypeError(f"Unknown node {node!r}")
-
-
-def one_layer_normalize(node: Node) -> Node | ShapeBottom:
-    """The one-layer-beta structure map: one contraction per application position (``depth == 1``).
-
-    A distinct denotational variant beside ``weak_head_normalize`` (Levy-Longo) and ``head_normalize``
-    (Boehm): where weak head normalization fires the head spine to a constructor, this fires a single
-    redex per position and leaves any remaining redex as a guarded let-stub.
-    """
-    return normalize_to_depth(node, 1)

@@ -26,7 +26,14 @@ from typing import TypeVar
 from tablambda._ast import Node
 from tablambda._codec import quote_binnat
 from tablambda._defun_codegen import DEFUN
-from tablambda._defun_runtime import Thunk, _BOTTOM, _is_thunk, interned, run_in_large_stack
+from tablambda._defun_runtime import (
+    Closure,
+    Thunk,
+    _BOTTOM,
+    _is_thunk,
+    interned,
+    run_in_large_stack,
+)
 
 _AstNode = TypeVar("_AstNode", bound=ast.AST)
 from tablambda._dsl import app, build
@@ -156,11 +163,17 @@ def _canonicalize_classes(module: ast.Module) -> ast.Module:
 
 
 # --- Direct defun decoder: decode Scott-encoded AST from defunctionalized values -----------------
-# Mirrors ``_pyast.decode`` but operates on defun values (Thunk + closures) instead of interpreter
-# Nodes, eliminating the expensive ``reify`` NbE round-trip in the self-hosted compilation path.
+# Mirrors ``_pyast.decode`` but operates directly on compiled values (``Thunk`` + ``Closure``),
+# reflecting Scott structure out of them with marker handlers in the self-hosted compilation path.
 
 
-class _TagMarker:
+# The decoder reflects Scott structure out of compiled values by feeding them marker handlers and
+# reading which handler fires. Compiled code embeds these markers as ``Thunk`` callees/arguments and
+# forces them, so each marker must be a ``Node`` (a ``Closure``): a marker's weak head normal form is
+# itself, and applying a callable marker runs its Python ``__call__``.
+
+
+class _TagMarker(Closure):
     """Callable marker for Scott constructor extraction. When the Scott value selects this handler,
     it calls ``__call__`` once per field, accumulating the field values."""
 
@@ -170,31 +183,44 @@ class _TagMarker:
         self.tag = tag
         self.fields: list[object] = []
 
-    def __call__(self, argument: object) -> "_TagMarker":
+    def __call__(self, argument: Node) -> Node:
         self.fields.append(argument)
         return self
 
 
-class _ChurchApp:
-    """Marker node in a Church numeral spine: successor applied to predecessor."""
+class _ChurchApp(Closure):
+    """Marker node in a Church numeral spine: successor applied to predecessor. Never applied (it is a
+    spine value the decoder walks via ``argument``)."""
 
     __slots__ = ("argument",)
 
     def __init__(self, argument: object) -> None:
         self.argument = argument
 
+    def __call__(self, argument: Node) -> Node:
+        raise TypeError("_ChurchApp is a spine value, not applicable")
 
-class _ChurchSucc:
+
+class _ChurchSucc(Closure):
     """Callable marker for Church numeral successor."""
 
     __slots__ = ()
 
-    def __call__(self, argument: object) -> _ChurchApp:
+    def __call__(self, argument: Node) -> Node:
         return _ChurchApp(argument)
 
 
+class _ChurchZero(Closure):
+    """The Church-numeral zero marker: the base value at the end of the spine, never applied."""
+
+    __slots__ = ()
+
+    def __call__(self, argument: Node) -> Node:
+        raise TypeError("_ChurchZero is a base value, not applicable")
+
+
 _CHURCH_SUCC_DEFUN = _ChurchSucc()
-_CHURCH_ZERO_DEFUN = object()
+_CHURCH_ZERO_DEFUN = _ChurchZero()
 
 _church_int_cache: "dict[int, int]" = {}
 _defun_gensym_ids: "dict[int, str]" = {}
@@ -309,8 +335,9 @@ def _decode_field_defun(value: object) -> object:
 def decode_defun(value: object) -> ast.AST:
     """Decode a Scott-encoded AST directly from defunctionalized values (Thunks + closures).
 
-    Skips the ``reify`` NbE round-trip that converts defun values to interpreter Nodes. Under
-    ``_memoized_decode_defun``, each distinct interned value is decoded once (keyed by identity).
+    Reflects Scott structure out of the compiled values with marker handlers, with no intermediate
+    interpreter-tree readback. Under ``_memoized_decode_defun``, each distinct interned value is
+    decoded once (keyed by identity).
     """
     if _defun_decode_memo is not None:
         cached = _defun_decode_memo.get(id(value))
@@ -347,6 +374,7 @@ def _defun_globals() -> dict:
     return {
         "Thunk": Thunk,
         "interned": interned,
+        "Closure": Closure,
     }
 
 
@@ -372,13 +400,15 @@ def defunctionalize_and_load(node: Node) -> object:
 
 
 # A self-contained import header so a generated defunctionalized module runs on its own: it binds the
-# exactly two runtime free names the generated code references (``Thunk``, ``interned``). ``interned``
-# applies ``dataclass(eq=False)`` itself, so generated classes carry only ``@interned``.
+# runtime free names the generated code references (``Closure``, ``Thunk``, ``interned``). Every
+# generated closure explicitly subclasses ``Closure`` and annotates its captures ``cap_i: Closure``;
+# ``interned`` applies ``dataclass(eq=False)`` and hash-conses, so generated classes carry only
+# ``@interned``.
 _DEFUN_MODULE_HEADER = (
     "# Generated, self-contained module: the import header is added at serialization time (see\n"
     "# tablambda._defunctionalize.runnable_defun_module); the body is emitted by the DEFUN lambda\n"
     "# term and content-addressed by compiled dataclass shape.\n"
-    "from tablambda._defun_runtime import Lambda, Thunk, interned\n"
+    "from tablambda._defun_runtime import Closure, Thunk, interned\n"
 )
 
 
@@ -423,48 +453,3 @@ def compile_with_defun(engine: object, node: Node) -> str:
 
     return run_in_large_stack(work)
 
-
-def reify(value: object, depth: int = 0) -> Node:
-    """Read a defunctionalized value back to an interpreter ``Node``.
-
-    Forces ``Thunk.weak_head_normal_form`` to reach a closure (a defunctionalized dataclass with
-    ``__call__``) or a neutral term (``Node``), then probes closures under a fresh neutral binder
-    to read their body.
-    """
-    from tablambda._ast import Node as AstNode, make_app, make_lam, make_var
-
-    if _is_thunk(value):
-        whnf = value.weak_head_normal_form
-        if whnf is _BOTTOM:
-            raise ValueError("reify: hit bottom (unproductive cycle)")
-        return reify(whnf, depth)
-
-    if isinstance(value, AstNode):
-        return _reify_node(value, depth)
-
-    if callable(value):
-        probe = make_var(depth)
-        result = value(probe)
-        return make_lam(reify(result, depth + 1))
-
-    raise ValueError(f"reify: cannot read back {value!r}")
-
-
-def _reify_node(node: Node, depth: int) -> Node:
-    """Read back an interpreter Node that appears as a neutral term in defunctionalized output.
-
-    Probe variables are created as ``make_var(level)`` where ``level`` is the depth at probe time.
-    When quoting back, a variable at level ``l`` under ``depth`` binders has de Bruijn index
-    ``depth - l - 1``. Sub-terms of neutral applications may be defunctionalized values (when a
-    closure was probed with a neutral variable); these are handed back to ``reify``.
-    """
-    from tablambda._ast import App, Var, make_app, make_lam, make_var
-
-    whnf = node.weak_head_normal_form
-    match whnf:
-        case Var(index=level):
-            return make_var(depth - level - 1)
-        case App(function=function, argument=argument):
-            return make_app(reify(function, depth), reify(argument, depth))
-        case _:
-            raise ValueError(f"reify: unexpected weak head normal form in neutral term: {whnf!r}")

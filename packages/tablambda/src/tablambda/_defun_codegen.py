@@ -114,7 +114,7 @@ FREE_VARS: Builder = app(Y, lam(lambda self_rec: lam(lambda quoted: ap(
 # --- Name constants for emitted code -----------------------------------------------------------
 
 _INTERNED_CODES: Builder = char_codes("interned")
-_LAMBDA_CODES: Builder = char_codes("Lambda")
+_CLOSURE_CODES: Builder = char_codes("Closure")
 _SELF_CODES: Builder = char_codes("self")
 _A_CODES: Builder = char_codes("a")
 _THUNK_CODES: Builder = char_codes("Thunk")
@@ -122,7 +122,7 @@ _COMPILED_CODES: Builder = char_codes("compiled")
 _CALL_CODES: Builder = char_codes("__call__")
 
 _INTERNED_NAME: Builder = ex_name(field_str(_INTERNED_CODES))
-_LAMBDA_NAME: Builder = ex_name(field_str(_LAMBDA_CODES))
+_CLOSURE_NAME: Builder = ex_name(field_str(_CLOSURE_CODES))
 _SELF_NAME: Builder = ex_name(field_str(_SELF_CODES))
 _THUNK_NAME: Builder = ex_name(field_str(_THUNK_CODES))
 
@@ -133,6 +133,8 @@ _KIND_CLASS: Builder = int_to_binnat(10)
 _KIND_CAPTURE: Builder = int_to_binnat(11)
 
 _DECORATOR_LIST: Builder = one(field_node(_INTERNED_NAME))
+# Every generated closure explicitly subclasses ``Closure`` (so a compiled value is a ``Node``).
+_BASES_LIST: Builder = one(field_node(_CLOSURE_NAME))
 
 
 # --- PROCESS_FREE_VARS: build capture fields and the body-env lookup list together --------------
@@ -161,7 +163,7 @@ PROCESS_FREE_VARS: Builder = app(Y, lam(lambda self_rec: lam(
                     ap(self_rec, app(BIN_SUCC, position), tail),
                     lambda rest: pair(
                         cons(
-                            stmt(py_annassign(ex_name(cap_name), _LAMBDA_NAME)),
+                            stmt(py_annassign(ex_name(cap_name), _CLOSURE_NAME)),
                             pair_first(rest),
                         ),
                         cons(
@@ -252,6 +254,7 @@ _DEFUN_REC: Builder = app(Y, lam(lambda self_rec: lam(lambda quoted: ap(
                             lam(lambda rest: cons(
                                 stmt(py_classdef(
                                     name_gensym_field(_KIND_CLASS, quoted),
+                                    _BASES_LIST,
                                     _DECORATOR_LIST,
                                     ap(
                                         LIST_APPEND,

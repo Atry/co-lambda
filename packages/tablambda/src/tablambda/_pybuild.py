@@ -289,14 +289,16 @@ def two_nodes(first: Builder, second: Builder) -> Builder:
 # compilation decisions; they fill the ``ast`` fields the generic decoder expects.
 
 
-def py_classdef(name_field: Builder, decorator_fields: Builder, body_fields: Builder) -> Builder:
-    """``class <name>: <body>`` with decorators, no bases/keywords/type_params.
+def py_classdef(
+    name_field: Builder, bases_fields: Builder, decorator_fields: Builder, body_fields: Builder
+) -> Builder:
+    """``class <name>(<bases>): <body>`` with decorators, no keywords/type_params.
 
     Field order follows ``ast.ClassDef._fields`` on the running Python version.
     """
     by_name = {
         "name": name_field,
-        "bases": field_list(SCOTT_NIL),
+        "bases": field_list(bases_fields),
         "keywords": field_list(SCOTT_NIL),
         "body": field_list(body_fields),
         "decorator_list": field_list(decorator_fields),

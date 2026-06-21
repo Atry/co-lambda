@@ -1,510 +1,510 @@
 # Generated, self-contained module: the import header is added at serialization time (see
 # tablambda._defunctionalize.runnable_defun_module); the body is emitted by the DEFUN lambda
 # term and content-addressed by compiled dataclass shape.
-from tablambda._defun_runtime import Lambda, Thunk, interned
+from tablambda._defun_runtime import Closure, Thunk, interned
 
 @interned
-class vg_02ff11caaf19b4b9:
-    cap_0: Lambda
-    cap_1: Lambda
-    cap_2: Lambda
+class vg_07fe30769a7d0b57(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
-        return vg_2230863067456824(self.cap_0, a, self.cap_1, self.cap_2)
+        return Thunk(Thunk(self.cap_0, a), Thunk(vg_2b9e6be3fdcdc2db(), a))
 
 @interned
-class vg_058e3cc29db14e05:
-    cap_0: Lambda
+class vg_089a575129b29bd7(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
-        return vg_a3d71a2af140cd9a(self.cap_0)
+        return Thunk(Thunk(self.cap_0, Thunk(vg_2b9e6be3fdcdc2db(), a)), a)
 
 @interned
-class vg_05cb8f45acfb4f70:
-    cap_0: Lambda
-    cap_1: Lambda
-    cap_2: Lambda
+class vg_0fc0c80aa37d5418(Closure):
+    cap_0: Closure
+    cap_1: Closure
 
     def __call__(self, a):
-        return Thunk(Thunk(self.cap_0, vg_f49283d0832b8a76(self.cap_1, a, self.cap_2)), Thunk(Thunk(Thunk(Thunk(vg_0b17941dba80ae55(), vg_f66ce25cbf4476ae()), Thunk(Thunk(vg_847c076d741b143b(), self.cap_2), a)), vg_83e99f609820d1c2()), vg_573dd662ffb3725e()))
+        return vg_c9ce625418bfa9fc(a, self.cap_0, self.cap_1)
 
 @interned
-class vg_09621442b80aaa61:
-    cap_0: Lambda
+class vg_108719df6dbc8e31(Closure):
 
     def __call__(self, a):
-        return vg_9be39cf36d5b8260(a, self.cap_0)
+        return vg_07fe30769a7d0b57(a)
 
 @interned
-class vg_0b17941dba80ae55:
+class vg_164851237114cf70(Closure):
+    cap_0: Closure
+    cap_1: Closure
+    cap_2: Closure
 
     def __call__(self, a):
-        return Thunk(vg_882f2b2f4ca2972e(a), vg_882f2b2f4ca2972e(a))
+        return Thunk(Thunk(self.cap_0, vg_83ce730a8f1095a7(a, self.cap_1, self.cap_2)), Thunk(Thunk(a, vg_37a22bcdaa7e80f0(self.cap_1, self.cap_2)), Thunk(Thunk(self.cap_1, Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), vg_9dd83a0b38353a6c())), vg_9dd83a0b38353a6c())))
 
 @interned
-class vg_0e06e1c303c0a010:
+class vg_1cf45aeaf14b8eb3(Closure):
+    cap_0: Closure
+    cap_1: Closure
 
     def __call__(self, a):
-        return vg_59efebc7d81cdaec(a)
+        return vg_164851237114cf70(a, self.cap_0, self.cap_1)
 
 @interned
-class vg_11dbeee8edcd5065:
-    cap_0: Lambda
-    cap_1: Lambda
+class vg_1d8e228ce8f1c29c(Closure):
+    cap_0: Closure
+    cap_1: Closure
+    cap_2: Closure
+    cap_3: Closure
+    cap_4: Closure
+    cap_5: Closure
 
     def __call__(self, a):
-        return vg_255143f7441c3d08(a, self.cap_0, self.cap_1)
+        return Thunk(Thunk(Thunk(Thunk(vg_65c40eeb813c6c26(), self.cap_0), self.cap_1), Thunk(Thunk(self.cap_2, self.cap_3), a)), Thunk(vg_5a62cb3a19e71727(), Thunk(Thunk(vg_50302ac7fb4731d2(), Thunk(Thunk(self.cap_2, self.cap_3), a)), Thunk(Thunk(vg_50302ac7fb4731d2(), Thunk(Thunk(self.cap_2, self.cap_3), self.cap_4)), Thunk(Thunk(self.cap_2, self.cap_5), a)))))
 
 @interned
-class vg_13772e5867dff07f:
-    cap_0: Lambda
-    cap_1: Lambda
-    cap_2: Lambda
+class vg_24214f20524fdf16(Closure):
+    cap_0: Closure
+    cap_1: Closure
 
     def __call__(self, a):
-        return vg_31235d92190927af(self.cap_0, a, self.cap_1, self.cap_2)
+        return Thunk(Thunk(self.cap_0, vg_c907a156d9f1c9a6(a, self.cap_1)), Thunk(Thunk(a, vg_58afd7fa88f586ef()), vg_439917b9df6b0880()))
 
 @interned
-class vg_13c95f395d388c58:
-    cap_0: Lambda
+class vg_2501989fcb79f05e(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
-        return Thunk(Thunk(self.cap_0, vg_16f2ce6352e69203()), a)
+        return vg_d29fa36a45476b9a(a, self.cap_0)
 
 @interned
-class vg_164e7c565b446dc5:
-
-    def __call__(self, a):
-        return vg_c91092638703aca7(a)
-
-@interned
-class vg_16f2ce6352e69203:
-
-    def __call__(self, a):
-        return vg_a3d71a2af140cd9a(a)
-
-@interned
-class vg_2185e66a6e53396f:
-
-    def __call__(self, a):
-        return vg_c1647922045bfd7b(a)
-
-@interned
-class vg_2230863067456824:
-    cap_0: Lambda
-    cap_1: Lambda
-    cap_2: Lambda
-    cap_3: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(self.cap_0, vg_84f7233a749408ca(self.cap_1, self.cap_2, a, self.cap_0, self.cap_3)), Thunk(Thunk(vg_0b17941dba80ae55(), vg_a10dd380fe3ad593()), self.cap_3))
-
-@interned
-class vg_255143f7441c3d08:
-    cap_0: Lambda
-    cap_1: Lambda
-    cap_2: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(vg_847c076d741b143b(), Thunk(Thunk(vg_6422d19d9d6e3d7f(), self.cap_0), self.cap_1)), Thunk(Thunk(Thunk(self.cap_2, Thunk(Thunk(vg_2744e7ea98d4a1d8(), self.cap_0), self.cap_1)), vg_5e82a4badd71c4a6()), a))
-
-@interned
-class vg_2744e7ea98d4a1d8:
-
-    def __call__(self, a):
-        return vg_6ea51b9e70be0add(a)
-
-@interned
-class vg_2a0f990d798e9f2b:
-
-    def __call__(self, a):
-        return vg_54f66b7fb4dceac7(a)
-
-@interned
-class vg_2f5c0f44560e2a7a:
-
-    def __call__(self, a):
-        return vg_952a99dda5085575(a)
-
-@interned
-class vg_31235d92190927af:
-    cap_0: Lambda
-    cap_1: Lambda
-    cap_2: Lambda
-    cap_3: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(self.cap_0, vg_9118d48b4fe3bf6b(self.cap_1, self.cap_2, self.cap_3, a)), Thunk(Thunk(vg_847c076d741b143b(), Thunk(Thunk(vg_6422d19d9d6e3d7f(), self.cap_1), self.cap_2)), Thunk(Thunk(Thunk(self.cap_3, Thunk(Thunk(vg_2744e7ea98d4a1d8(), self.cap_1), self.cap_2)), a), vg_5e82a4badd71c4a6())))
-
-@interned
-class vg_477ca3d648b77025:
-    cap_0: Lambda
-    cap_1: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(self.cap_0, vg_e5ce78dd7c4da283(a, self.cap_1)), Thunk(Thunk(a, vg_164e7c565b446dc5()), vg_83e99f609820d1c2()))
-
-@interned
-class vg_4795df2250e6debb:
-    cap_0: Lambda
-    cap_1: Lambda
-    cap_2: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(self.cap_0, self.cap_1), self.cap_2)
-
-@interned
-class vg_4997e4cea9eca6c1:
-
-    def __call__(self, a):
-        return Thunk(Thunk(a, vg_5e82a4badd71c4a6()), vg_16f2ce6352e69203())
-
-@interned
-class vg_54ee7e64410dc910:
-
-    def __call__(self, a):
-        return Thunk(Thunk(vg_2f5c0f44560e2a7a(), a), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), vg_5e82a4badd71c4a6()))
-
-@interned
-class vg_54f66b7fb4dceac7:
-    cap_0: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(Thunk(Thunk(Thunk(Thunk(vg_0b17941dba80ae55(), vg_2185e66a6e53396f()), self.cap_0), a), vg_5e82a4badd71c4a6()), vg_16f2ce6352e69203()), vg_5e82a4badd71c4a6())
-
-@interned
-class vg_573dd662ffb3725e:
-
-    def __call__(self, a):
-        return vg_5e82a4badd71c4a6()
-
-@interned
-class vg_5987dfe2be5fa611:
-
-    def __call__(self, a):
-        return vg_09621442b80aaa61(a)
-
-@interned
-class vg_59e5dd4a7d996a99:
-    cap_0: Lambda
-    cap_1: Lambda
-    cap_2: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(self.cap_0, vg_13772e5867dff07f(a, self.cap_1, self.cap_2)), Thunk(Thunk(a, vg_11dbeee8edcd5065(self.cap_1, self.cap_2)), Thunk(Thunk(self.cap_1, Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), vg_5e82a4badd71c4a6())), vg_5e82a4badd71c4a6())))
-
-@interned
-class vg_59efebc7d81cdaec:
-    cap_0: Lambda
-
-    def __call__(self, a):
-        return vg_9804ce9fda27faa1(a, self.cap_0)
-
-@interned
-class vg_5b5a93b356251651:
-    cap_0: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(self.cap_0, a), Thunk(vg_4997e4cea9eca6c1(), a))
-
-@interned
-class vg_5c0ce6c0fb67e387:
-    cap_0: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(self.cap_0, Thunk(vg_4997e4cea9eca6c1(), a)), a)
-
-@interned
-class vg_5e82a4badd71c4a6:
-
-    def __call__(self, a):
-        return vg_90808ac1cd37d6ee()
-
-@interned
-class vg_5f1829c4cb4fcb50:
-
-    def __call__(self, a):
-        return vg_60bd053e7f2150c0(a)
-
-@interned
-class vg_60bd053e7f2150c0:
-    cap_0: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(Thunk(Thunk(Thunk(Thunk(vg_0b17941dba80ae55(), vg_2185e66a6e53396f()), self.cap_0), a), self.cap_0), self.cap_0), a)
-
-@interned
-class vg_6422d19d9d6e3d7f:
-
-    def __call__(self, a):
-        return vg_5c0ce6c0fb67e387(a)
-
-@interned
-class vg_6ea51b9e70be0add:
-    cap_0: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(self.cap_0, a), vg_5e82a4badd71c4a6())
-
-@interned
-class vg_6fff0c173710799d:
-
-    def __call__(self, a):
-        return vg_13c95f395d388c58(a)
-
-@interned
-class vg_7981e5d7f9e031cb:
-    cap_0: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(a, vg_c8b84b3009ed3e70(self.cap_0)), vg_5e82a4badd71c4a6())
-
-@interned
-class vg_7f30319076fd25b8:
-    cap_0: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(Thunk(Thunk(vg_9783180761372f54(), self.cap_0), a), vg_83e99f609820d1c2()), Thunk(Thunk(self.cap_0, vg_573dd662ffb3725e()), vg_ca48d2e32b3afb75()))
-
-@interned
-class vg_83e99f609820d1c2:
-
-    def __call__(self, a):
-        return vg_16f2ce6352e69203()
-
-@interned
-class vg_847c076d741b143b:
-
-    def __call__(self, a):
-        return vg_d1c148f3f965949b(a)
-
-@interned
-class vg_84f7233a749408ca:
-    cap_0: Lambda
-    cap_1: Lambda
-    cap_2: Lambda
-    cap_3: Lambda
-    cap_4: Lambda
-
-    def __call__(self, a):
-        return vg_9564354cc2495ffb(self.cap_0, a, self.cap_1, self.cap_2, self.cap_3, self.cap_4)
-
-@interned
-class vg_882f2b2f4ca2972e:
-    cap_0: Lambda
-
-    def __call__(self, a):
-        return Thunk(self.cap_0, Thunk(a, a))
-
-@interned
-class vg_90808ac1cd37d6ee:
-
-    def __call__(self, a):
-        return a
-
-@interned
-class vg_90ea83fc5f087b8d:
-
-    def __call__(self, a):
-        return vg_d00aa76db1c91fc5(a)
-
-@interned
-class vg_9118d48b4fe3bf6b:
-    cap_0: Lambda
-    cap_1: Lambda
-    cap_2: Lambda
-    cap_3: Lambda
-
-    def __call__(self, a):
-        return vg_9c1546c12fd5a63c(self.cap_0, a, self.cap_1, self.cap_2, self.cap_3)
-
-@interned
-class vg_952a99dda5085575:
-    cap_0: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(Thunk(Thunk(vg_0b17941dba80ae55(), vg_0e06e1c303c0a010()), vg_5e82a4badd71c4a6()), self.cap_0), a)
-
-@interned
-class vg_9564354cc2495ffb:
-    cap_0: Lambda
-    cap_1: Lambda
-    cap_2: Lambda
-    cap_3: Lambda
-    cap_4: Lambda
-    cap_5: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(Thunk(Thunk(vg_2a0f990d798e9f2b(), self.cap_0), self.cap_1), Thunk(Thunk(self.cap_2, self.cap_3), a)), Thunk(vg_54ee7e64410dc910(), Thunk(Thunk(vg_5f1829c4cb4fcb50(), Thunk(Thunk(self.cap_2, self.cap_3), a)), Thunk(Thunk(vg_5f1829c4cb4fcb50(), Thunk(Thunk(self.cap_2, self.cap_3), self.cap_4)), Thunk(Thunk(self.cap_2, self.cap_5), a)))))
-
-@interned
-class vg_9783180761372f54:
-
-    def __call__(self, a):
-        return vg_5b5a93b356251651(a)
-
-@interned
-class vg_9804ce9fda27faa1:
-    cap_0: Lambda
-    cap_1: Lambda
-
-    def __call__(self, a):
-        return vg_59e5dd4a7d996a99(a, self.cap_0, self.cap_1)
-
-@interned
-class vg_9a925adbcd2edbf2:
-    cap_0: Lambda
-
-    def __call__(self, a):
-        return Thunk(vg_54ee7e64410dc910(), Thunk(self.cap_0, a))
-
-@interned
-class vg_9be39cf36d5b8260:
-    cap_0: Lambda
-    cap_1: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(self.cap_0, vg_02ff11caaf19b4b9(a, self.cap_1, self.cap_0)), Thunk(Thunk(vg_0b17941dba80ae55(), vg_a10dd380fe3ad593()), a))
-
-@interned
-class vg_9c1546c12fd5a63c:
-    cap_0: Lambda
-    cap_1: Lambda
-    cap_2: Lambda
-    cap_3: Lambda
-    cap_4: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(vg_847c076d741b143b(), Thunk(Thunk(vg_6422d19d9d6e3d7f(), Thunk(Thunk(vg_6422d19d9d6e3d7f(), self.cap_0), self.cap_1)), self.cap_2)), Thunk(Thunk(Thunk(self.cap_3, Thunk(Thunk(Thunk(vg_90ea83fc5f087b8d(), self.cap_0), self.cap_1), self.cap_2)), self.cap_4), a))
-
-@interned
-class vg_a10dd380fe3ad593:
-
-    def __call__(self, a):
-        return vg_7981e5d7f9e031cb(a)
-
-@interned
-class vg_a3d71a2af140cd9a:
-    cap_0: Lambda
+class vg_267c5a013e0be552(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
         return self.cap_0
 
 @interned
-class vg_aa4e5a45e3eefbe9:
+class vg_2afc3067ea510b0b(Closure):
+    cap_0: Closure
+    cap_1: Closure
 
     def __call__(self, a):
-        return vg_7f30319076fd25b8(a)
+        return Thunk(Thunk(vg_950f650a6f7f8132(), Thunk(Thunk(vg_73c269783328e5ed(), self.cap_0), self.cap_1)), Thunk(Thunk(vg_950f650a6f7f8132(), Thunk(Thunk(vg_73c269783328e5ed(), self.cap_0), a)), Thunk(Thunk(vg_73c269783328e5ed(), self.cap_1), a)))
 
 @interned
-class vg_c1647922045bfd7b:
-    cap_0: Lambda
+class vg_2b9e6be3fdcdc2db(Closure):
 
     def __call__(self, a):
-        return vg_477ca3d648b77025(a, self.cap_0)
+        return Thunk(Thunk(a, vg_9dd83a0b38353a6c()), vg_2f7005dfc64f22d3())
 
 @interned
-class vg_c8b84b3009ed3e70:
-    cap_0: Lambda
+class vg_2f7005dfc64f22d3(Closure):
 
     def __call__(self, a):
-        return vg_9a925adbcd2edbf2(self.cap_0)
+        return vg_267c5a013e0be552(a)
 
 @interned
-class vg_c91092638703aca7:
-    cap_0: Lambda
+class vg_32c060a3b019949a(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
-        return Thunk(Thunk(Thunk(Thunk(vg_0b17941dba80ae55(), vg_f66ce25cbf4476ae()), Thunk(Thunk(vg_847c076d741b143b(), self.cap_0), a)), vg_83e99f609820d1c2()), vg_ca48d2e32b3afb75())
+        return Thunk(Thunk(Thunk(Thunk(Thunk(Thunk(vg_87807b7d77c0bc35(), vg_6356e238c4eae69a()), self.cap_0), a), self.cap_0), self.cap_0), a)
 
 @interned
-class vg_ca48d2e32b3afb75:
+class vg_34ec91e0a7028d61(Closure):
+    cap_0: Closure
+    cap_1: Closure
+    cap_2: Closure
 
     def __call__(self, a):
-        return vg_058e3cc29db14e05(a)
+        return Thunk(Thunk(self.cap_0, vg_6d4cf8e91ef7411f(self.cap_1, a, self.cap_2)), Thunk(Thunk(Thunk(Thunk(vg_87807b7d77c0bc35(), vg_cfae7f5eccd588ed()), Thunk(Thunk(vg_8063e79fbbf0b759(), self.cap_2), a)), vg_439917b9df6b0880()), vg_6e6aafd047ea9acf()))
 
 @interned
-class vg_d00aa76db1c91fc5:
-    cap_0: Lambda
+class vg_37579a5d29d45af0(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
-        return vg_f88f84065b06c39f(self.cap_0, a)
+        return Thunk(vg_5a62cb3a19e71727(), Thunk(self.cap_0, a))
 
 @interned
-class vg_d1c148f3f965949b:
-    cap_0: Lambda
+class vg_37a22bcdaa7e80f0(Closure):
+    cap_0: Closure
+    cap_1: Closure
 
     def __call__(self, a):
-        return vg_f464dfb25f725a2c(self.cap_0, a)
+        return vg_ad8c48a208685c5d(a, self.cap_0, self.cap_1)
 
 @interned
-class vg_dcb79e7d55a0c3f6:
-    cap_0: Lambda
-    cap_1: Lambda
+class vg_439917b9df6b0880(Closure):
 
     def __call__(self, a):
-        return Thunk(Thunk(self.cap_0, vg_5e82a4badd71c4a6()), Thunk(self.cap_1, a))
+        return vg_2f7005dfc64f22d3()
 
 @interned
-class vg_e338831b15291536:
-    cap_0: Lambda
-    cap_1: Lambda
-    cap_2: Lambda
-    cap_3: Lambda
+class vg_49f97b1b006e9074(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
-        return Thunk(Thunk(Thunk(Thunk(Thunk(self.cap_0, self.cap_1), a), vg_ca48d2e32b3afb75()), Thunk(Thunk(vg_aa4e5a45e3eefbe9(), self.cap_2), self.cap_3)), vg_573dd662ffb3725e())
+        return vg_0fc0c80aa37d5418(self.cap_0, a)
 
 @interned
-class vg_e5ce78dd7c4da283:
-    cap_0: Lambda
-    cap_1: Lambda
+class vg_50302ac7fb4731d2(Closure):
 
     def __call__(self, a):
-        return vg_05cb8f45acfb4f70(self.cap_0, self.cap_1, a)
+        return vg_32c060a3b019949a(a)
 
 @interned
-class vg_eddd6b7955cd1686:
-    cap_0: Lambda
+class vg_56a5e92339010f26(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
-        return Thunk(Thunk(a, vg_ffd874316c74c508(self.cap_0)), vg_16f2ce6352e69203())
+        return vg_37579a5d29d45af0(self.cap_0)
 
 @interned
-class vg_f464dfb25f725a2c:
-    cap_0: Lambda
-    cap_1: Lambda
+class vg_572528f8c3e4385b(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
-        return vg_4795df2250e6debb(a, self.cap_0, self.cap_1)
+        return Thunk(Thunk(Thunk(Thunk(Thunk(Thunk(vg_87807b7d77c0bc35(), vg_6356e238c4eae69a()), self.cap_0), a), vg_9dd83a0b38353a6c()), vg_2f7005dfc64f22d3()), vg_9dd83a0b38353a6c())
 
 @interned
-class vg_f49283d0832b8a76:
-    cap_0: Lambda
-    cap_1: Lambda
-    cap_2: Lambda
+class vg_5790a50754fc667f(Closure):
 
     def __call__(self, a):
-        return vg_e338831b15291536(self.cap_0, self.cap_1, self.cap_2, a)
+        return a
 
 @interned
-class vg_f66ce25cbf4476ae:
+class vg_58afd7fa88f586ef(Closure):
 
     def __call__(self, a):
-        return vg_eddd6b7955cd1686(a)
+        return vg_615a00b3f1e44e65(a)
 
 @interned
-class vg_f88f84065b06c39f:
-    cap_0: Lambda
-    cap_1: Lambda
+class vg_59fac9142a1b43d5(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
-        return Thunk(Thunk(vg_6fff0c173710799d(), Thunk(Thunk(vg_2744e7ea98d4a1d8(), self.cap_0), self.cap_1)), Thunk(Thunk(vg_6fff0c173710799d(), Thunk(Thunk(vg_2744e7ea98d4a1d8(), self.cap_0), a)), Thunk(Thunk(vg_2744e7ea98d4a1d8(), self.cap_1), a)))
+        return Thunk(Thunk(a, vg_9ce4cc3bc06570e5(self.cap_0)), vg_2f7005dfc64f22d3())
 
 @interned
-class vg_ffd874316c74c508:
-    cap_0: Lambda
+class vg_5a62cb3a19e71727(Closure):
 
     def __call__(self, a):
-        return vg_dcb79e7d55a0c3f6(a, self.cap_0)
-compiled = Thunk(vg_0b17941dba80ae55(), vg_5987dfe2be5fa611())
+        return Thunk(Thunk(vg_73cc4c88116472c8(), a), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), vg_9dd83a0b38353a6c()))
+
+@interned
+class vg_615a00b3f1e44e65(Closure):
+    cap_0: Closure
+
+    def __call__(self, a):
+        return Thunk(Thunk(Thunk(Thunk(vg_87807b7d77c0bc35(), vg_cfae7f5eccd588ed()), Thunk(Thunk(vg_8063e79fbbf0b759(), self.cap_0), a)), vg_439917b9df6b0880()), vg_8e257d4c73e89c62())
+
+@interned
+class vg_6356e238c4eae69a(Closure):
+
+    def __call__(self, a):
+        return vg_e77f1d10ec6ee1c1(a)
+
+@interned
+class vg_65c40eeb813c6c26(Closure):
+
+    def __call__(self, a):
+        return vg_572528f8c3e4385b(a)
+
+@interned
+class vg_67dda99bc366bfc7(Closure):
+
+    def __call__(self, a):
+        return vg_c3e9c656ab4f9937(a)
+
+@interned
+class vg_6c685142c1292ff0(Closure):
+    cap_0: Closure
+    cap_1: Closure
+    cap_2: Closure
+    cap_3: Closure
+    cap_4: Closure
+
+    def __call__(self, a):
+        return vg_1d8e228ce8f1c29c(self.cap_0, a, self.cap_1, self.cap_2, self.cap_3, self.cap_4)
+
+@interned
+class vg_6ce5f545aa276ac7(Closure):
+    cap_0: Closure
+
+    def __call__(self, a):
+        return Thunk(Thunk(a, vg_56a5e92339010f26(self.cap_0)), vg_9dd83a0b38353a6c())
+
+@interned
+class vg_6d4cf8e91ef7411f(Closure):
+    cap_0: Closure
+    cap_1: Closure
+    cap_2: Closure
+
+    def __call__(self, a):
+        return vg_dbf3c09a64421247(self.cap_0, self.cap_1, self.cap_2, a)
+
+@interned
+class vg_6d7c5d43302710ae(Closure):
+    cap_0: Closure
+    cap_1: Closure
+    cap_2: Closure
+
+    def __call__(self, a):
+        return vg_d027764473dfc419(self.cap_0, a, self.cap_1, self.cap_2)
+
+@interned
+class vg_6e6aafd047ea9acf(Closure):
+
+    def __call__(self, a):
+        return vg_9dd83a0b38353a6c()
+
+@interned
+class vg_73c269783328e5ed(Closure):
+
+    def __call__(self, a):
+        return vg_825b48edb2a1b909(a)
+
+@interned
+class vg_73cc4c88116472c8(Closure):
+
+    def __call__(self, a):
+        return vg_d4925a595c167951(a)
+
+@interned
+class vg_8063e79fbbf0b759(Closure):
+
+    def __call__(self, a):
+        return vg_49f97b1b006e9074(a)
+
+@interned
+class vg_825b48edb2a1b909(Closure):
+    cap_0: Closure
+
+    def __call__(self, a):
+        return Thunk(Thunk(self.cap_0, a), vg_9dd83a0b38353a6c())
+
+@interned
+class vg_83ce730a8f1095a7(Closure):
+    cap_0: Closure
+    cap_1: Closure
+    cap_2: Closure
+
+    def __call__(self, a):
+        return vg_f0e3258f2ff87106(self.cap_0, a, self.cap_1, self.cap_2)
+
+@interned
+class vg_83ede87e1972aa4b(Closure):
+
+    def __call__(self, a):
+        return vg_964bc2304cceb6ce(a)
+
+@interned
+class vg_87807b7d77c0bc35(Closure):
+
+    def __call__(self, a):
+        return Thunk(vg_c3cf9e393305e4d5(a), vg_c3cf9e393305e4d5(a))
+
+@interned
+class vg_8e257d4c73e89c62(Closure):
+
+    def __call__(self, a):
+        return vg_b96f08cff84409ba(a)
+
+@interned
+class vg_950f650a6f7f8132(Closure):
+
+    def __call__(self, a):
+        return vg_f39525022c5c8f01(a)
+
+@interned
+class vg_964bc2304cceb6ce(Closure):
+    cap_0: Closure
+
+    def __call__(self, a):
+        return vg_2afc3067ea510b0b(self.cap_0, a)
+
+@interned
+class vg_9b872a8af2109e0e(Closure):
+    cap_0: Closure
+    cap_1: Closure
+
+    def __call__(self, a):
+        return Thunk(Thunk(self.cap_0, vg_9dd83a0b38353a6c()), Thunk(self.cap_1, a))
+
+@interned
+class vg_9be975d359b54f2b(Closure):
+    cap_0: Closure
+    cap_1: Closure
+    cap_2: Closure
+    cap_3: Closure
+    cap_4: Closure
+
+    def __call__(self, a):
+        return Thunk(Thunk(vg_8063e79fbbf0b759(), Thunk(Thunk(vg_d80f904b29ed6bc4(), Thunk(Thunk(vg_d80f904b29ed6bc4(), self.cap_0), self.cap_1)), self.cap_2)), Thunk(Thunk(Thunk(self.cap_3, Thunk(Thunk(Thunk(vg_83ede87e1972aa4b(), self.cap_0), self.cap_1), self.cap_2)), self.cap_4), a))
+
+@interned
+class vg_9ce4cc3bc06570e5(Closure):
+    cap_0: Closure
+
+    def __call__(self, a):
+        return vg_9b872a8af2109e0e(a, self.cap_0)
+
+@interned
+class vg_9dd83a0b38353a6c(Closure):
+
+    def __call__(self, a):
+        return vg_5790a50754fc667f()
+
+@interned
+class vg_ad8c48a208685c5d(Closure):
+    cap_0: Closure
+    cap_1: Closure
+    cap_2: Closure
+
+    def __call__(self, a):
+        return Thunk(Thunk(vg_8063e79fbbf0b759(), Thunk(Thunk(vg_d80f904b29ed6bc4(), self.cap_0), self.cap_1)), Thunk(Thunk(Thunk(self.cap_2, Thunk(Thunk(vg_73c269783328e5ed(), self.cap_0), self.cap_1)), vg_9dd83a0b38353a6c()), a))
+
+@interned
+class vg_b2ad9a9c705a39fc(Closure):
+    cap_0: Closure
+    cap_1: Closure
+    cap_2: Closure
+    cap_3: Closure
+
+    def __call__(self, a):
+        return vg_9be975d359b54f2b(self.cap_0, a, self.cap_1, self.cap_2, self.cap_3)
+
+@interned
+class vg_b96f08cff84409ba(Closure):
+    cap_0: Closure
+
+    def __call__(self, a):
+        return vg_267c5a013e0be552(self.cap_0)
+
+@interned
+class vg_c3cf9e393305e4d5(Closure):
+    cap_0: Closure
+
+    def __call__(self, a):
+        return Thunk(self.cap_0, Thunk(a, a))
+
+@interned
+class vg_c3e9c656ab4f9937(Closure):
+    cap_0: Closure
+
+    def __call__(self, a):
+        return vg_1cf45aeaf14b8eb3(a, self.cap_0)
+
+@interned
+class vg_c907a156d9f1c9a6(Closure):
+    cap_0: Closure
+    cap_1: Closure
+
+    def __call__(self, a):
+        return vg_34ec91e0a7028d61(self.cap_0, self.cap_1, a)
+
+@interned
+class vg_c9441ef0670b8080(Closure):
+
+    def __call__(self, a):
+        return vg_2501989fcb79f05e(a)
+
+@interned
+class vg_c9ce625418bfa9fc(Closure):
+    cap_0: Closure
+    cap_1: Closure
+    cap_2: Closure
+
+    def __call__(self, a):
+        return Thunk(Thunk(self.cap_0, self.cap_1), self.cap_2)
+
+@interned
+class vg_cfae7f5eccd588ed(Closure):
+
+    def __call__(self, a):
+        return vg_59fac9142a1b43d5(a)
+
+@interned
+class vg_cfbda2abc1826f9a(Closure):
+
+    def __call__(self, a):
+        return vg_6ce5f545aa276ac7(a)
+
+@interned
+class vg_d027764473dfc419(Closure):
+    cap_0: Closure
+    cap_1: Closure
+    cap_2: Closure
+    cap_3: Closure
+
+    def __call__(self, a):
+        return Thunk(Thunk(self.cap_0, vg_6c685142c1292ff0(self.cap_1, self.cap_2, a, self.cap_0, self.cap_3)), Thunk(Thunk(vg_87807b7d77c0bc35(), vg_cfbda2abc1826f9a()), self.cap_3))
+
+@interned
+class vg_d29fa36a45476b9a(Closure):
+    cap_0: Closure
+    cap_1: Closure
+
+    def __call__(self, a):
+        return Thunk(Thunk(self.cap_0, vg_6d7c5d43302710ae(a, self.cap_1, self.cap_0)), Thunk(Thunk(vg_87807b7d77c0bc35(), vg_cfbda2abc1826f9a()), a))
+
+@interned
+class vg_d4925a595c167951(Closure):
+    cap_0: Closure
+
+    def __call__(self, a):
+        return Thunk(Thunk(Thunk(Thunk(vg_87807b7d77c0bc35(), vg_67dda99bc366bfc7()), vg_9dd83a0b38353a6c()), self.cap_0), a)
+
+@interned
+class vg_d80f904b29ed6bc4(Closure):
+
+    def __call__(self, a):
+        return vg_089a575129b29bd7(a)
+
+@interned
+class vg_dbf3c09a64421247(Closure):
+    cap_0: Closure
+    cap_1: Closure
+    cap_2: Closure
+    cap_3: Closure
+
+    def __call__(self, a):
+        return Thunk(Thunk(Thunk(Thunk(Thunk(self.cap_0, self.cap_1), a), vg_8e257d4c73e89c62()), Thunk(Thunk(vg_f65e982d7f00bee3(), self.cap_2), self.cap_3)), vg_6e6aafd047ea9acf())
+
+@interned
+class vg_e77f1d10ec6ee1c1(Closure):
+    cap_0: Closure
+
+    def __call__(self, a):
+        return vg_24214f20524fdf16(a, self.cap_0)
+
+@interned
+class vg_e99468c8fcf2802f(Closure):
+    cap_0: Closure
+
+    def __call__(self, a):
+        return Thunk(Thunk(Thunk(Thunk(vg_108719df6dbc8e31(), self.cap_0), a), vg_439917b9df6b0880()), Thunk(Thunk(self.cap_0, vg_6e6aafd047ea9acf()), vg_8e257d4c73e89c62()))
+
+@interned
+class vg_f0e3258f2ff87106(Closure):
+    cap_0: Closure
+    cap_1: Closure
+    cap_2: Closure
+    cap_3: Closure
+
+    def __call__(self, a):
+        return Thunk(Thunk(self.cap_0, vg_b2ad9a9c705a39fc(self.cap_1, self.cap_2, self.cap_3, a)), Thunk(Thunk(vg_8063e79fbbf0b759(), Thunk(Thunk(vg_d80f904b29ed6bc4(), self.cap_1), self.cap_2)), Thunk(Thunk(Thunk(self.cap_3, Thunk(Thunk(vg_73c269783328e5ed(), self.cap_1), self.cap_2)), a), vg_9dd83a0b38353a6c())))
+
+@interned
+class vg_f39525022c5c8f01(Closure):
+    cap_0: Closure
+
+    def __call__(self, a):
+        return Thunk(Thunk(self.cap_0, vg_2f7005dfc64f22d3()), a)
+
+@interned
+class vg_f65e982d7f00bee3(Closure):
+
+    def __call__(self, a):
+        return vg_e99468c8fcf2802f(a)
+compiled = Thunk(vg_87807b7d77c0bc35(), vg_c9441ef0670b8080())

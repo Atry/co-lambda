@@ -1,9 +1,9 @@
 """The defunctionalized runtime: the minimal execution substrate for compiled code.
 
-Generated code references exactly two free names from this module: ``Thunk`` and ``interned``.
-Everything else is internal implementation (``_BOTTOM``, ``fixpoint_cached_property``) or a
-host import (``dataclass``). The runtime holds NO domain logic; all compilation decisions live
-in the pure-lambda compiler ``_defun_codegen``.
+Generated code references three free names from this module: ``Closure``, ``Thunk``, and ``interned``.
+A compiled ``Closure`` and a ``Thunk`` are both ``Node``s, so they share the interpreter's
+``weak_head_normal_form`` and interning and can run mixed with interpreted terms. The runtime holds NO
+domain logic; all compilation decisions live in the pure-lambda compiler ``_defun_codegen``.
 """
 
 from __future__ import annotations
@@ -12,24 +12,38 @@ import hashlib
 import struct
 import sys
 import threading
+from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass, fields as dataclass_fields
-from enum import Enum, auto
-from typing import Any, Literal, Protocol, TypeGuard, Union, TypeVar, overload
+from typing import Any, TypeGuard, TypeVar, overload
 
 from typing_extensions import dataclass_transform
 
-from fixpoints._core import fixpoint_cached_property, fixpoint_slotted
+from tablambda._ast import Node, WeakHeadBottom
 
 _T = TypeVar("_T")
 
+# The compiled runtime shares the interpreter's single bottom (``WeakHeadBottom``); ``_BOTTOM`` is the
+# terse internal alias used at the forcing call sites.
+_BOTTOM = WeakHeadBottom.BOTTOM
 
-class _DefunBottom(Enum):
-    BOTTOM = auto()
 
+class Closure(Node, ABC):
+    """A compiled closure: an opaque, closed, 1-ary callable ``Node`` (the defunctionalized value, and
+    the FFI). Every closure class the compiler emits subclasses ``Closure`` (injected by ``interned``),
+    so a compiled value is a ``Node`` and shares the interpreter's ``weak_head_normal_form`` and
+    interning. A closure is a weak-head value (its weak head normal form is itself), and it is closed,
+    so its ``loose_bound`` is ``0`` and ``shift``/``substitute`` leave it untouched.
+    """
 
-_BOTTOM = _DefunBottom.BOTTOM
+    __slots__ = ()
+
+    # Closures are closed: no exposed de Bruijn index, so shift/substitute are identity.
+    loose_bound = 0
+
+    @abstractmethod
+    def __call__(self, argument: Node) -> Node: ...
 
 
 def _intern(cls: type[_T], field_names: tuple[str, ...]) -> type[_T]:
@@ -77,15 +91,19 @@ def interned(
 
 @dataclass_transform(eq_default=False)
 def interned(cls=None, *, slots=True):
-    """Class decorator: make ``cls`` a frozen-by-identity dataclass and hash-cons its instances.
+    """Class decorator: make a generated ``Closure`` subclass a frozen-by-identity dataclass and
+    hash-cons its instances.
 
     Applies ``dataclass(eq=False, slots=slots)`` internally (so generated code needs only
     ``@interned``, not a separate ``@dataclass``), then interns. ``slots=True`` (the default) makes the
     closures the compiler emits slotted, which is faster and lighter; ``eq=False`` keeps identity-based
-    equality. Usable bare (``@interned``) or parameterised (``@interned(slots=False)``).
+    equality. The compiler emits each closure as ``@interned class vg_...(Closure)``, so the class is
+    already a ``Node`` before this decorator runs. Usable bare (``@interned``) or parameterised
+    (``@interned(slots=False)``).
     """
     if cls is None:
         return lambda klass: interned(klass, slots=slots)
+    assert issubclass(cls, Closure), f"@interned expects a Closure subclass, got {cls!r}"
     cls = dataclass(eq=False, slots=slots)(cls)
     field_names = tuple(f.name for f in dataclass_fields(cls))
     return _intern(cls, field_names)
@@ -97,34 +115,41 @@ def _deterministic_hash(*parts: int) -> int:
     return int.from_bytes(hashlib.sha256(data).digest()[:8], "big")
 
 
-@fixpoint_slotted
-class Thunk:
-    """A suspended application (redex). Interned so structurally equal redexes share identity,
-    enabling tabling: ``weak_head_normal_form`` is computed once per distinct ``Thunk``.
+class Thunk(Node):
+    """A suspended application (redex) as a ``Node``: an ``App`` whose callee is a compiled value.
+    Interned so structurally equal redexes share identity, enabling tabling: its
+    ``weak_head_normal_form`` (inherited from ``Node``) is computed once per distinct ``Thunk``.
 
-    Slotted for speed and low memory; ``@fixpoint_slotted`` automatically adds a dedicated cache
-    slot for each ``fixpoint_cached_property``, avoiding a ``__dict__`` or intermediate dict.
-    Identity-based equality (``object.__eq__``).
+    It does NOT redeclare ``weak_head_normal_form`` (that would duplicate ``Node``'s fixpoint cache
+    slot); instead ``_shape.compute_weak_head_normal_form`` dispatches a ``Thunk`` to ``force``.
+    A thunk is closed, so its ``loose_bound`` is ``0``.
     """
 
     __slots__ = ("callee", "argument")
 
-    def __init__(self, callee: Lambda, argument: Lambda) -> None:
+    # A redex over closed compiled values is itself closed.
+    loose_bound = 0
+
+    def __init__(self, callee: Node, argument: Node) -> None:
         self.callee = callee
         self.argument = argument
 
-    def __call__(self, a: Lambda) -> Thunk:
+    def __call__(self, a: Node) -> "Thunk":
         return Thunk(self, a)
 
-    @fixpoint_cached_property(bottom=lambda: _BOTTOM)
-    def weak_head_normal_form(self) -> Lambda | Literal[_DefunBottom.BOTTOM]:
-        callee = self.callee
-        if _is_thunk(callee):
-            callee = callee.weak_head_normal_form
-            if callee is _BOTTOM:
-                return _BOTTOM
-        result = callee(self.argument)
-        return result.weak_head_normal_form if _is_thunk(result) else result
+    def force(self) -> Node | WeakHeadBottom:
+        """The weak head normal form of this redex: force the callee to a value, apply it to the
+        argument, and force the result. Mixed-safe: the callee may force to an interpreter ``Lam`` or a
+        ``Closure``, and ``apply_value`` handles both."""
+        from tablambda._shape import apply_value, weak_head_normalize
+
+        callee = weak_head_normalize(self.callee)
+        if callee is _BOTTOM:
+            return _BOTTOM
+        result = apply_value(callee, self.argument)
+        if result is _BOTTOM:
+            return _BOTTOM
+        return weak_head_normalize(result)
 
 
 Thunk = _intern(Thunk, ("callee", "argument"))
@@ -132,12 +157,6 @@ Thunk = _intern(Thunk, ("callee", "argument"))
 
 def _is_thunk(x: object) -> TypeGuard[Thunk]:
     return isinstance(x, Thunk)
-
-
-class Lambda(Protocol):
-    """A lambda value: any callable that takes a Lambda and returns a Lambda or Thunk."""
-
-    def __call__(self, a: Lambda) -> Union["Lambda", "Thunk"]: ...
 
 
 # --- stack helpers ---------------------------------------------------------------------------------

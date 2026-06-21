@@ -1,26 +1,76 @@
 # serializer version: 1
-# name: test_s_combinator_capture[s_combinator_source_py313]
+# name: test_s_combinator_capture[s_combinator_source_py311]
   '''
   @interned
-  class vg_06b9d631843e6868:
-  
-      def __call__(self, a):
-          return vg_fae107ca4c8122d0(a)
-  
-  @interned
-  class vg_3f43d6474a4a6c72:
-      cap_0: Lambda
-      cap_1: Lambda
+  class vg_0436862b0712a9b9(Closure):
+      cap_0: Closure
+      cap_1: Closure
   
       def __call__(self, a):
           return Thunk(Thunk(self.cap_0, a), Thunk(self.cap_1, a))
   
   @interned
-  class vg_fae107ca4c8122d0:
-      cap_0: Lambda
+  class vg_419505282b346900(Closure):
+      cap_0: Closure
   
       def __call__(self, a):
-          return vg_3f43d6474a4a6c72(self.cap_0, a)
-  compiled = vg_06b9d631843e6868()
+          return vg_0436862b0712a9b9(self.cap_0, a)
+  
+  @interned
+  class vg_b575c8409c8cc26d(Closure):
+  
+      def __call__(self, a):
+          return vg_419505282b346900(a)
+  compiled = vg_b575c8409c8cc26d()
+  '''
+# ---
+# name: test_s_combinator_capture[s_combinator_source_py312]
+  '''
+  @interned
+  class vg_2ec7ab5f77e57a97(Closure):
+  
+      def __call__(self, a):
+          return vg_90116e5bc6cd35cb(a)
+  
+  @interned
+  class vg_90116e5bc6cd35cb(Closure):
+      cap_0: Closure
+  
+      def __call__(self, a):
+          return vg_b7a0e7d4b7e16338(self.cap_0, a)
+  
+  @interned
+  class vg_b7a0e7d4b7e16338(Closure):
+      cap_0: Closure
+      cap_1: Closure
+  
+      def __call__(self, a):
+          return Thunk(Thunk(self.cap_0, a), Thunk(self.cap_1, a))
+  compiled = vg_2ec7ab5f77e57a97()
+  '''
+# ---
+# name: test_s_combinator_capture[s_combinator_source_py313]
+  '''
+  @interned
+  class vg_2b68c329814849ee(Closure):
+      cap_0: Closure
+  
+      def __call__(self, a):
+          return vg_f17bf75670b6665f(self.cap_0, a)
+  
+  @interned
+  class vg_c73af53d23e8cb0d(Closure):
+  
+      def __call__(self, a):
+          return vg_2b68c329814849ee(a)
+  
+  @interned
+  class vg_f17bf75670b6665f(Closure):
+      cap_0: Closure
+      cap_1: Closure
+  
+      def __call__(self, a):
+          return Thunk(Thunk(self.cap_0, a), Thunk(self.cap_1, a))
+  compiled = vg_c73af53d23e8cb0d()
   '''
 # ---

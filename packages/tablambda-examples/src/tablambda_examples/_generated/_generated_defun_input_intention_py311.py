@@ -1,60 +1,60 @@
 # Generated, self-contained module: the import header is added at serialization time (see
 # tablambda._defunctionalize.runnable_defun_module); the body is emitted by the DEFUN lambda
 # term and content-addressed by compiled dataclass shape.
-from tablambda._defun_runtime import Lambda, Thunk, interned
+from tablambda._defun_runtime import Closure, Thunk, interned
 
 @interned
-class vg_16f2ce6352e69203:
+class vg_0fc0c80aa37d5418(Closure):
+    cap_0: Closure
+    cap_1: Closure
 
     def __call__(self, a):
-        return vg_a3d71a2af140cd9a(a)
+        return vg_c9ce625418bfa9fc(a, self.cap_0, self.cap_1)
 
 @interned
-class vg_4795df2250e6debb:
-    cap_0: Lambda
-    cap_1: Lambda
-    cap_2: Lambda
-
-    def __call__(self, a):
-        return Thunk(Thunk(self.cap_0, self.cap_1), self.cap_2)
-
-@interned
-class vg_5e82a4badd71c4a6:
-
-    def __call__(self, a):
-        return vg_90808ac1cd37d6ee()
-
-@interned
-class vg_847c076d741b143b:
-
-    def __call__(self, a):
-        return vg_d1c148f3f965949b(a)
-
-@interned
-class vg_90808ac1cd37d6ee:
-
-    def __call__(self, a):
-        return a
-
-@interned
-class vg_a3d71a2af140cd9a:
-    cap_0: Lambda
+class vg_267c5a013e0be552(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
         return self.cap_0
 
 @interned
-class vg_d1c148f3f965949b:
-    cap_0: Lambda
+class vg_2f7005dfc64f22d3(Closure):
 
     def __call__(self, a):
-        return vg_f464dfb25f725a2c(self.cap_0, a)
+        return vg_267c5a013e0be552(a)
 
 @interned
-class vg_f464dfb25f725a2c:
-    cap_0: Lambda
-    cap_1: Lambda
+class vg_49f97b1b006e9074(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
-        return vg_4795df2250e6debb(a, self.cap_0, self.cap_1)
-compiled = Thunk(Thunk(vg_847c076d741b143b(), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), vg_5e82a4badd71c4a6())))))))), Thunk(Thunk(vg_847c076d741b143b(), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), vg_5e82a4badd71c4a6())))))))), Thunk(Thunk(vg_847c076d741b143b(), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), vg_5e82a4badd71c4a6())))))))), Thunk(Thunk(vg_847c076d741b143b(), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), vg_5e82a4badd71c4a6())))))))), Thunk(Thunk(vg_847c076d741b143b(), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), vg_5e82a4badd71c4a6())))))))), Thunk(Thunk(vg_847c076d741b143b(), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), vg_5e82a4badd71c4a6())))))))), Thunk(Thunk(vg_847c076d741b143b(), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), vg_5e82a4badd71c4a6())))))))), Thunk(Thunk(vg_847c076d741b143b(), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), vg_5e82a4badd71c4a6())))))))), Thunk(Thunk(vg_847c076d741b143b(), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_5e82a4badd71c4a6()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), Thunk(Thunk(vg_847c076d741b143b(), vg_16f2ce6352e69203()), vg_5e82a4badd71c4a6())))))))), vg_5e82a4badd71c4a6())))))))))
+        return vg_0fc0c80aa37d5418(self.cap_0, a)
+
+@interned
+class vg_5790a50754fc667f(Closure):
+
+    def __call__(self, a):
+        return a
+
+@interned
+class vg_8063e79fbbf0b759(Closure):
+
+    def __call__(self, a):
+        return vg_49f97b1b006e9074(a)
+
+@interned
+class vg_9dd83a0b38353a6c(Closure):
+
+    def __call__(self, a):
+        return vg_5790a50754fc667f()
+
+@interned
+class vg_c9ce625418bfa9fc(Closure):
+    cap_0: Closure
+    cap_1: Closure
+    cap_2: Closure
+
+    def __call__(self, a):
+        return Thunk(Thunk(self.cap_0, self.cap_1), self.cap_2)
+compiled = Thunk(Thunk(vg_8063e79fbbf0b759(), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), vg_9dd83a0b38353a6c())))))))), Thunk(Thunk(vg_8063e79fbbf0b759(), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), vg_9dd83a0b38353a6c())))))))), Thunk(Thunk(vg_8063e79fbbf0b759(), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), vg_9dd83a0b38353a6c())))))))), Thunk(Thunk(vg_8063e79fbbf0b759(), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), vg_9dd83a0b38353a6c())))))))), Thunk(Thunk(vg_8063e79fbbf0b759(), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), vg_9dd83a0b38353a6c())))))))), Thunk(Thunk(vg_8063e79fbbf0b759(), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), vg_9dd83a0b38353a6c())))))))), Thunk(Thunk(vg_8063e79fbbf0b759(), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), vg_9dd83a0b38353a6c())))))))), Thunk(Thunk(vg_8063e79fbbf0b759(), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), vg_9dd83a0b38353a6c())))))))), Thunk(Thunk(vg_8063e79fbbf0b759(), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_9dd83a0b38353a6c()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), Thunk(Thunk(vg_8063e79fbbf0b759(), vg_2f7005dfc64f22d3()), vg_9dd83a0b38353a6c())))))))), vg_9dd83a0b38353a6c())))))))))

@@ -4,178 +4,178 @@
 \medskip\noindent\textbf{Identity.}\quad $\lambda x.\, x$
 \begin{lstlisting}
 @interned
-class vg_61b34437d45d82e0:
+class vg_5790a50754fc667f(Closure):
 
     def __call__(self, a):
         return a
-compiled = vg_61b34437d45d82e0()
+compiled = vg_5790a50754fc667f()
 \end{lstlisting}
 
 \medskip\noindent\textbf{The constant combinator $K$.}\quad $\lambda x.\, \lambda y.\, x$
 \begin{lstlisting}
 @interned
-class vg_513d3b50ad4efcd5:
-    cap_0: Lambda
+class vg_267c5a013e0be552(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
         return self.cap_0
 
 @interned
-class vg_ed8877638757d1e5:
+class vg_2f7005dfc64f22d3(Closure):
 
     def __call__(self, a):
-        return vg_513d3b50ad4efcd5(a)
-compiled = vg_ed8877638757d1e5()
+        return vg_267c5a013e0be552(a)
+compiled = vg_2f7005dfc64f22d3()
 \end{lstlisting}
 
 \medskip\noindent\textbf{Church numeral $2$.}\quad $\lambda x.\, \lambda y.\, x\, (x\, y)$
 \begin{lstlisting}
 @interned
-class vg_668ed7a4d73636cd:
-
-    def __call__(self, a):
-        return vg_dd3a9ec0f1f21e07(a)
-
-@interned
-class vg_dd3a9ec0f1f21e07:
-    cap_0: Lambda
+class vg_1393e1124049719f(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
         return Thunk(self.cap_0, Thunk(self.cap_0, a))
-compiled = vg_668ed7a4d73636cd()
+
+@interned
+class vg_1ca9b7d68a0fb084(Closure):
+
+    def __call__(self, a):
+        return vg_1393e1124049719f(a)
+compiled = vg_1ca9b7d68a0fb084()
 \end{lstlisting}
 
 \medskip\noindent\textbf{Successor.}\quad $\lambda x.\, \lambda y.\, \lambda z.\, y\, (x\, y\, z)$
 \begin{lstlisting}
 @interned
-class vg_024ecac0007beeed:
-    cap_0: Lambda
+class vg_504ccc190e93e6eb(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
-        return vg_ac1702da3e5f1e19(a, self.cap_0)
+        return vg_f03ad1e4ac91d757(a, self.cap_0)
 
 @interned
-class vg_797083f6435071e8:
+class vg_956ac5818c92855f(Closure):
 
     def __call__(self, a):
-        return vg_024ecac0007beeed(a)
+        return vg_504ccc190e93e6eb(a)
 
 @interned
-class vg_ac1702da3e5f1e19:
-    cap_0: Lambda
-    cap_1: Lambda
+class vg_f03ad1e4ac91d757(Closure):
+    cap_0: Closure
+    cap_1: Closure
 
     def __call__(self, a):
         return Thunk(self.cap_0, Thunk(Thunk(self.cap_1, self.cap_0), a))
-compiled = vg_797083f6435071e8()
+compiled = vg_956ac5818c92855f()
 \end{lstlisting}
 
 \medskip\noindent\textbf{Addition.}\quad $\lambda x.\, \lambda y.\, \lambda z.\, \lambda w.\, x\, z\, (y\, z\, w)$
 \begin{lstlisting}
 @interned
-class vg_3a0aff5bf1368a2c:
-    cap_0: Lambda
+class vg_09245224e9a7f871(Closure):
 
     def __call__(self, a):
-        return vg_523cab64babb50de(self.cap_0, a)
+        return vg_96d17350f4830bfe(a)
 
 @interned
-class vg_523cab64babb50de:
-    cap_0: Lambda
-    cap_1: Lambda
+class vg_7dcf3312a46a289a(Closure):
+    cap_0: Closure
+    cap_1: Closure
 
     def __call__(self, a):
-        return vg_fc570d6bf3eb9d38(self.cap_0, a, self.cap_1)
+        return vg_d7831256c99dd51a(self.cap_0, a, self.cap_1)
 
 @interned
-class vg_98b78b6a8655531f:
+class vg_96d17350f4830bfe(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
-        return vg_3a0aff5bf1368a2c(a)
+        return vg_7dcf3312a46a289a(self.cap_0, a)
 
 @interned
-class vg_fc570d6bf3eb9d38:
-    cap_0: Lambda
-    cap_1: Lambda
-    cap_2: Lambda
+class vg_d7831256c99dd51a(Closure):
+    cap_0: Closure
+    cap_1: Closure
+    cap_2: Closure
 
     def __call__(self, a):
         return Thunk(Thunk(self.cap_0, self.cap_1), Thunk(Thunk(self.cap_2, self.cap_1), a))
-compiled = vg_98b78b6a8655531f()
+compiled = vg_09245224e9a7f871()
 \end{lstlisting}
 
 \medskip\noindent\textbf{Multiplication.}\quad $\lambda x.\, \lambda y.\, \lambda z.\, x\, (y\, z)$
 \begin{lstlisting}
 @interned
-class vg_1df5f797ec547eb1:
-    cap_0: Lambda
+class vg_68c11b23b73fbba6(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
-        return vg_59c47787408da0bf(self.cap_0, a)
+        return vg_770fab1dc9b2bce6(self.cap_0, a)
 
 @interned
-class vg_59c47787408da0bf:
-    cap_0: Lambda
-    cap_1: Lambda
+class vg_770fab1dc9b2bce6(Closure):
+    cap_0: Closure
+    cap_1: Closure
 
     def __call__(self, a):
         return Thunk(self.cap_0, Thunk(self.cap_1, a))
 
 @interned
-class vg_f0db4cb95e6c20bd:
+class vg_f255f0e2d2822ac2(Closure):
 
     def __call__(self, a):
-        return vg_1df5f797ec547eb1(a)
-compiled = vg_f0db4cb95e6c20bd()
+        return vg_68c11b23b73fbba6(a)
+compiled = vg_f255f0e2d2822ac2()
 \end{lstlisting}
 
 \medskip\noindent\textbf{Zero test.}\quad $\lambda x.\, x\, (\lambda y.\, \lambda z.\, \lambda w.\, w)\, (\lambda y.\, \lambda z.\, y)$
 \begin{lstlisting}
 @interned
-class vg_513d3b50ad4efcd5:
-    cap_0: Lambda
+class vg_267c5a013e0be552(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
         return self.cap_0
 
 @interned
-class vg_61b34437d45d82e0:
+class vg_2f7005dfc64f22d3(Closure):
+
+    def __call__(self, a):
+        return vg_267c5a013e0be552(a)
+
+@interned
+class vg_5790a50754fc667f(Closure):
 
     def __call__(self, a):
         return a
 
 @interned
-class vg_9eca90c294b53d2f:
+class vg_6e6aafd047ea9acf(Closure):
 
     def __call__(self, a):
-        return vg_61b34437d45d82e0()
+        return vg_9dd83a0b38353a6c()
 
 @interned
-class vg_a34392661eb8de00:
+class vg_9dd83a0b38353a6c(Closure):
 
     def __call__(self, a):
-        return Thunk(Thunk(a, vg_a834fc82a7024f4f()), vg_ed8877638757d1e5())
+        return vg_5790a50754fc667f()
 
 @interned
-class vg_a834fc82a7024f4f:
+class vg_bb1e0c653b7009af(Closure):
 
     def __call__(self, a):
-        return vg_9eca90c294b53d2f()
-
-@interned
-class vg_ed8877638757d1e5:
-
-    def __call__(self, a):
-        return vg_513d3b50ad4efcd5(a)
-compiled = vg_a34392661eb8de00()
+        return Thunk(Thunk(a, vg_6e6aafd047ea9acf()), vg_2f7005dfc64f22d3())
+compiled = vg_bb1e0c653b7009af()
 \end{lstlisting}
 
 \medskip\noindent\textbf{Self-application.}\quad $\lambda x.\, x\, x$
 \begin{lstlisting}
 @interned
-class vg_e18cec08b71c2b6d:
+class vg_1b49bc69f60c1e7c(Closure):
 
     def __call__(self, a):
         return Thunk(a, a)
-compiled = vg_e18cec08b71c2b6d()
+compiled = vg_1b49bc69f60c1e7c()
 \end{lstlisting}

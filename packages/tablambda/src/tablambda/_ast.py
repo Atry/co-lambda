@@ -19,13 +19,13 @@ from typing import Callable, cast, final
 from fixpoints._core import fixpoint_cached_property, fixpoint_slotted
 
 
-class ShapeBottom(Enum):
-    """The bottom of the shape lattice: no weak-head shape (bottom, an unproductive cycle)."""
+class WeakHeadBottom(Enum):
+    """The bottom of the weak-head lattice: a term with no weak head normal form (an unproductive cycle)."""
 
     BOTTOM = auto()
 
 
-BOTTOM = ShapeBottom.BOTTOM
+BOTTOM = WeakHeadBottom.BOTTOM
 
 
 @fixpoint_slotted
@@ -46,7 +46,7 @@ class Node(ABC):
     @fixpoint_cached_property(
         bottom=lambda: BOTTOM, merge=lambda left, right: _deep_merge(left, right)
     )
-    def weak_head_normal_form(self) -> "Node | ShapeBottom":
+    def weak_head_normal_form(self) -> "Node | WeakHeadBottom":
         """The weak head normal form: the outermost constructor after weak head reduction, a least
         fixpoint.
 
@@ -62,21 +62,6 @@ class Node(ABC):
         from tablambda._shape import compute_weak_head_normal_form
 
         return compute_weak_head_normal_form(self)
-
-    @fixpoint_cached_property(
-        bottom=lambda: BOTTOM, merge=lambda left, right: _deep_merge(left, right)
-    )
-    def head_normal_form(self) -> "Node | ShapeBottom":
-        """The head normal form (the Boehm reading): the outermost constructor after head reduction,
-        a least fixpoint.
-
-        Identical to ``weak_head_normal_form`` except that a ``lambda`` whose body has no head normal
-        form is itself ``BOTTOM`` here (head reduction continues under the ``lambda``), so the readout
-        is the Boehm tree rather than Levy-Longo.
-        """
-        from tablambda._shape import compute_head_normal_form
-
-        return compute_head_normal_form(self)
 
     def __call__(self, *arguments: "Node") -> "Node":
         """Curried application: ``function(a, b, c)`` builds ``make_app(make_app(make_app(function,
@@ -109,29 +94,6 @@ class App(Node):
     __slots__ = ("function", "argument")
     function: Node
     argument: Node
-
-
-@final
-@dataclass(kw_only=True, eq=False, repr=False)
-class Native(Node):
-    """A foreign-function node: a compiled Python callable embedded in the term graph (the FFI).
-
-    ``run`` takes ``arity`` argument ``Node``s and returns a result ``Node``; the Node graph is the
-    lingua franca, so a compiled island interoperates with the interpreter by consuming and producing
-    nodes. A closed island is ``arity == 0`` (``run()`` builds its result node). The interpreter
-    drives it: a saturated native fires ``run`` and continues normalizing the returned node, so a
-    compiled island sits inside an otherwise interpreted (folding) graph.
-
-    ``collected`` holds the arguments gathered so far while the native is under-applied (empty for a
-    bare native): an ``App`` spine over a native is read back as a ``Native`` whose ``collected`` grows
-    one argument at a time until it reaches ``arity`` and fires. A bare native is closed, but a partial
-    application's ``loose_bound`` is that of its collected arguments.
-    """
-
-    __slots__ = ("run", "arity", "collected")
-    run: "Callable[..., Node]"
-    arity: int
-    collected: "tuple[Node, ...]"
 
 
 # Hash-consing: structurally-equal nodes (with already-interned children) become the SAME
@@ -222,37 +184,24 @@ def make_app(function: Node, argument: Node) -> App:
     )
 
 
-def make_native(
-    run: "Callable[..., Node]", arity: int, collected: "tuple[Node, ...]" = ()
-) -> Native:
-    if arity < 0:
-        raise ValueError("native arity must be nonnegative")
-    return cast(
-        Native,
-        _intern_node(
-            ("Native", id(run), arity, tuple(id(node) for node in collected)),
-            lambda: Native(run=run, arity=arity, collected=collected),
-        ),
-    )
-
-
-def _deep_merge(left: "Node | ShapeBottom", right: "Node | ShapeBottom") -> "Node | ShapeBottom":
+def _deep_merge(left: "Node | WeakHeadBottom", right: "Node | WeakHeadBottom") -> "Node | WeakHeadBottom":
     """Join two approximations of a node's weak-head/Boehm layer in the approximation order.
 
     ``BOTTOM`` is least, so it joins to the other side. Two non-``BOTTOM`` layers with the same
     outermost constructor join structurally (their successors merge); two different constructors (or
-    ``Var`` indices, or native run/arity) have no upper bound, a conflict that crashes, because a
-    deterministic effect must not expose two incompatible layers at one node. Because nodes are
-    interned, equal layers share identity and the common case short-circuits without recursing.
+    ``Var`` indices) have no upper bound, a conflict that crashes, because a deterministic effect must
+    not expose two incompatible layers at one node. Two distinct compiled values (``Closure``/``Thunk``,
+    interned in their own pool) fall through to the conflict arm. Because nodes are interned, equal
+    layers share identity and the common case short-circuits without recursing.
     """
     return _deep_merge_into(left, right, {})
 
 
 def _deep_merge_into(
-    left: "Node | ShapeBottom",
-    right: "Node | ShapeBottom",
+    left: "Node | WeakHeadBottom",
+    right: "Node | WeakHeadBottom",
     in_progress: "dict[tuple[int, int], None]",
-) -> "Node | ShapeBottom":
+) -> "Node | WeakHeadBottom":
     if right is BOTTOM:
         return left
     if left is BOTTOM:
@@ -282,21 +231,6 @@ def _deep_merge_into(
                     _deep_merge_into(left_function, right_function, in_progress),
                     _deep_merge_into(left_argument, right_argument, in_progress),
                 )
-            case (
-                Native(run=left_run, arity=left_arity, collected=left_collected),
-                Native(run=right_run, arity=right_arity, collected=right_collected),
-            ):
-                if (
-                    left_run is not right_run
-                    or left_arity != right_arity
-                    or len(left_collected) != len(right_collected)
-                ):
-                    raise ValueError("deep merge conflict: incompatible natives")
-                merged_collected = tuple(
-                    _deep_merge_into(left_child, right_child, in_progress)
-                    for left_child, right_child in zip(left_collected, right_collected)
-                )
-                return make_native(left_run, left_arity, merged_collected)
             case _:
                 raise ValueError(
                     f"deep merge conflict: {type(left).__name__} vs {type(right).__name__}"
@@ -313,8 +247,6 @@ def _loose_bound(node: Node) -> int:
             return max(0, body.loose_bound - 1)
         case App(function=function, argument=argument):
             return max(function.loose_bound, argument.loose_bound)
-        case Native(collected=collected):
-            return max((argument.loose_bound for argument in collected), default=0)
         case _:
             raise TypeError(f"Unknown node {node!r}")
 
@@ -332,12 +264,6 @@ def shift(node: Node, *, cutoff: int, amount: int) -> Node:
             return make_app(
                 shift(function, cutoff=cutoff, amount=amount),
                 shift(argument, cutoff=cutoff, amount=amount),
-            )
-        case Native(run=run, arity=arity, collected=collected):
-            return make_native(
-                run,
-                arity,
-                tuple(shift(argument, cutoff=cutoff, amount=amount) for argument in collected),
             )
         case _:
             raise TypeError(f"Unknown node {node!r}")
@@ -358,15 +284,6 @@ def substitute(node: Node, *, depth: int, argument: Node) -> Node:
             return make_app(
                 substitute(function, depth=depth, argument=argument),
                 substitute(app_argument, depth=depth, argument=argument),
-            )
-        case Native(run=run, arity=arity, collected=collected):
-            return make_native(
-                run,
-                arity,
-                tuple(
-                    substitute(collected_argument, depth=depth, argument=argument)
-                    for collected_argument in collected
-                ),
             )
         case _:
             raise TypeError(f"Unknown node {node!r}")

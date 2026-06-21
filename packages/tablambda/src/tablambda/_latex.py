@@ -9,7 +9,7 @@ Python, so the lambda's name at level ``k`` corresponds to the Python parameter 
 
 from __future__ import annotations
 
-from tablambda._ast import App, Lam, Native, Node, Var
+from tablambda._ast import App, Lam, Node, Var
 
 # Readable bound-variable names indexed by de Bruijn level; deeper levels fall back to a subscript.
 _READABLE_NAMES = (
@@ -38,8 +38,6 @@ def _latex(node: Node, depth: int) -> str:
             return f"\\lambda {_name(depth)}.\\, {_latex(body, depth + 1)}"
         case App(function=function, argument=argument):
             return f"{_function(function, depth)}\\, {_argument(argument, depth)}"
-        case Native(arity=arity):
-            return f"\\langle\\mathrm{{native}}/{arity}\\rangle"
         case _:
             raise TypeError(f"cannot render {node!r}")
 

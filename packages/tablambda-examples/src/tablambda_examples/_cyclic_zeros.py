@@ -18,7 +18,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import final
 
-from tablambda._ast import App, Lam, Node, ShapeBottom, Var, make_app, substitute
+from tablambda._ast import App, Lam, Node, WeakHeadBottom, Var, make_app, substitute
 from tablambda._dsl import app, build, lam
 from tablambda._prelude import SCOTT_CONS, Y, ZERO
 from tablambda._pyast import _church_to_int
@@ -45,7 +45,7 @@ _NAMES: "dict[int, str]" = {
 _STATE_NAMES: "dict[int, str]" = {id(STREAM): "r", id(W_APPLIED): "W W"}
 
 
-def cons_cell(node: "Node | ShapeBottom") -> "tuple[Node, Node] | None":
+def cons_cell(node: "Node | WeakHeadBottom") -> "tuple[Node, Node] | None":
     """The head and tail sub-terms if ``node`` is a Scott cons cell ``lambda c. lambda n. c head tail``."""
     if isinstance(node, Lam) and isinstance(node.body, Lam):
         spine = node.body.body

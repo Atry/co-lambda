@@ -1,56 +1,56 @@
 # Generated, self-contained module: the import header is added at serialization time (see
 # tablambda._defunctionalize.runnable_defun_module); the body is emitted by the DEFUN lambda
 # term and content-addressed by compiled dataclass shape.
-from tablambda._defun_runtime import Lambda, Thunk, interned
+from tablambda._defun_runtime import Closure, Thunk, interned
 
 @interned
-class vg_07eb33b144707f2e:
-    cap_0: Lambda
+class vg_23c02d03a51f842e(Closure):
 
     def __call__(self, a):
-        return Thunk(self.cap_0, vg_77598bdba9a12cd7())
+        return vg_eab3e33b86d031f1()
 
 @interned
-class vg_0a32e9e0eed3506d:
+class vg_3186342fbb3bc969(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
-        return vg_1ea4aae9a3c130bc()
+        return vg_96ace814564870ef(self.cap_0)
 
 @interned
-class vg_0b8ac02c03ab0a83:
-    cap_0: Lambda
+class vg_54dc8207c20e7d33(Closure):
+    cap_0: Closure
 
     def __call__(self, a):
-        return vg_22e34a6735a9d841(self.cap_0)
+        return Thunk(self.cap_0, vg_e43a8b0f1b4bed47())
 
 @interned
-class vg_1ea4aae9a3c130bc:
-
-    def __call__(self, a):
-        return vg_07eb33b144707f2e(a)
-
-@interned
-class vg_22e34a6735a9d841:
-    cap_0: Lambda
-
-    def __call__(self, a):
-        return Thunk(self.cap_0, vg_5e82a4badd71c4a6())
-
-@interned
-class vg_5e82a4badd71c4a6:
-
-    def __call__(self, a):
-        return vg_90808ac1cd37d6ee()
-
-@interned
-class vg_77598bdba9a12cd7:
-
-    def __call__(self, a):
-        return vg_0b8ac02c03ab0a83(a)
-
-@interned
-class vg_90808ac1cd37d6ee:
+class vg_5790a50754fc667f(Closure):
 
     def __call__(self, a):
         return a
-compiled = vg_0a32e9e0eed3506d()
+
+@interned
+class vg_96ace814564870ef(Closure):
+    cap_0: Closure
+
+    def __call__(self, a):
+        return Thunk(self.cap_0, vg_9dd83a0b38353a6c())
+
+@interned
+class vg_9dd83a0b38353a6c(Closure):
+
+    def __call__(self, a):
+        return vg_5790a50754fc667f()
+
+@interned
+class vg_e43a8b0f1b4bed47(Closure):
+
+    def __call__(self, a):
+        return vg_3186342fbb3bc969(a)
+
+@interned
+class vg_eab3e33b86d031f1(Closure):
+
+    def __call__(self, a):
+        return vg_54dc8207c20e7d33(a)
+compiled = vg_23c02d03a51f842e()
