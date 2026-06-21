@@ -5,8 +5,8 @@ combinator, the Scott booleans and lists, the binary-natural arithmetic the cost
 itself. None of it is transcribed by hand. Each definition is the actual ``Builder`` from the source,
 rendered by ``tablambda._hoas_latex`` with the bound-variable names the Python lambdas carry and with the
 other library constants shown by name (recognised by object identity), so a definition reads as itself and
-cross-references the rest. Each definition is a ``breqn`` ``dmath*`` so the long terms wrap automatically;
-the output is written to ``paper/generated/editdistance-code.tex`` and ``\\input`` by the paper.
+cross-references the rest. Each definition is wrapped in ``align*`` + ``autobreak`` so the long terms wrap
+automatically; the output is written to ``paper/generated/editdistance-code.tex`` and ``\\input`` by the paper.
 
 ``tablambda-editdistance-code`` (``python -m tablambda_examples._editdistance_code``) rewrites it.
 """
@@ -59,14 +59,14 @@ _LATEX_HEADER = (
     "% regenerate with: python -m tablambda_examples._editdistance_code\n"
 )
 
-# A breqn-friendly variant of the math style: an explicit zero-width break opportunity after every
-# application space and lambda dot, so dmath can wrap the application-heavy terms (which carry no binary
-# operator for breqn to break at on its own).
-_BREQN_STYLE: Style = Style(
+# An autobreak-friendly variant of the math style: a source newline after every application space and
+# lambda dot. autobreak breaks at source line ends, so these newlines are where it wraps the
+# application-heavy terms (which carry no binary operator for it to break at on its own).
+_AUTOBREAK_STYLE: Style = Style(
     constant=MATH_STYLE.constant,
     binder=MATH_STYLE.binder,
-    abstraction=lambda binder, body: f"\\lambda {binder}.\\,\\allowbreak {body}",
-    application=lambda function, argument: f"{function}\\,\\allowbreak {argument}",
+    abstraction=lambda binder, body: f"\\lambda {binder}.\\,\n{body}",
+    application=lambda function, argument: f"{function}\\,\n{argument}",
     parenthesise=MATH_STYLE.parenthesise,
 )
 
@@ -80,15 +80,15 @@ def _names() -> "dict[int, str]":
 
 
 def code_listing() -> str:
-    """The committed LaTeX fragment: each definition a ``breqn`` ``dmath*``, rendered from its HOAS term."""
+    """The committed LaTeX fragment: each definition in ``align*`` + ``autobreak``, rendered from its HOAS term."""
     names = _names()
     parts = [_LATEX_HEADER]
     for heading, definitions in _GROUPS:
         parts.append(f"\\smallskip\\noindent\\textit{{{heading}}}\\par\\nobreak")
         for name, builder in definitions:
             left = MATH_STYLE.constant(name)
-            right = render(builder, names, _BREQN_STYLE)
-            parts.append(f"\\begin{{dmath*}}\n{left} = {right}\n\\end{{dmath*}}")
+            right = render(builder, names, _AUTOBREAK_STYLE)
+            parts.append(f"\\begin{{align*}}\n\\begin{{autobreak}}\n{left} = {right}\n\\end{{autobreak}}\n\\end{{align*}}")
     return "\n".join(parts) + "\n"
 
 

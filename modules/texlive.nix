@@ -17,6 +17,10 @@
         "cjk"
         "xpinyin"
         "latexmk"
+        # CJKutf8 (from cjk) renders the Chinese preprint (preprint-zh.tex) under
+        # pdfLaTeX, like the English entries; arphic supplies the gbsn (SongTi)
+        # Type1 font it uses, so the build needs no system fonts.
+        "arphic"
         # acmart dependencies not in scheme-medium
         "xstring"
         "totpages"
@@ -43,9 +47,10 @@
         "ifoddpage"
         # pgf/tikz for the section 3 edit-distance call-tree / DP-grid figure
         "pgf"
-        # breqn auto-breaks the generated edit-distance code listing (long lambda terms).
-        # It bundles flexisym/mathstyle but requires expl3, so l3kernel/l3packages come with it.
-        "breqn"
+        # autobreak wraps the long lambda terms in the appendix code listings,
+        # breaking them at source line ends inside align*.
+        "autobreak"
+        # expl3 runtime, used by acmart and other packages.
         "l3kernel"
         "l3packages"
       ];
@@ -86,6 +91,10 @@
         ../paper/supplement-xref.tex
         ../paper/submission.tex
         ../paper/preprint.tex
+        ../paper/preprint-zh.tex
+        # \input by submission.tex and supplement.tex (drops acmart's tocindent
+        # labels when importing the cross-document .aux via xr-hyper).
+        ../paper/xr-tocindent-filter.tex
         ../paper/acmart.cls
         ../paper/ACM-Reference-Format.bst
         ../paper/references.bib
@@ -104,6 +113,15 @@
         root = ../paper;
         fileset = tablambdaSources;
         entry = "submission";
+      };
+
+      # The Chinese preprint: the same full document as the English preprint with
+      # reader-facing prose in Chinese, built with pdfLaTeX via CJKutf8.
+      tablambdaPreprintZhPdf = mkPaperPdf {
+        name = "tablambda-preprint-zh.pdf";
+        root = ../paper;
+        fileset = tablambdaSources;
+        entry = "preprint-zh";
       };
 
       tablambdaSrc = lib.fileset.toSource {
@@ -154,6 +172,7 @@
       tablambdaTexlivePackages = texlivePackages;
       packages.tablambda-appendix = tablambdaAppendixPdf;
       packages.tablambda-submission = tablambdaSubmissionPdf;
+      packages.tablambda-preprint-zh = tablambdaPreprintZhPdf;
       packages.tablambda-arxiv = tablambdaArxiv;
     };
 }

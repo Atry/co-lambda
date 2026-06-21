@@ -2,18 +2,44 @@
 % regenerate with: python -m tablambda_examples._cyclic_zeros_code
 
 \smallskip\noindent\textit{fixed point}\par\nobreak
-\begin{dmath*}
-Y = \lambda f.\,\allowbreak (\lambda x.\,\allowbreak f\,\allowbreak (x\,\allowbreak x))\,\allowbreak (\lambda x.\,\allowbreak f\,\allowbreak (x\,\allowbreak x))
-\end{dmath*}
+\begin{align*}
+\begin{autobreak}
+Y = \lambda f.\,
+(\lambda x.\,
+f\,
+(x\,
+x))\,
+(\lambda x.\,
+f\,
+(x\,
+x))
+\end{autobreak}
+\end{align*}
 \smallskip\noindent\textit{Scott list constructor}\par\nobreak
-\begin{dmath*}
-\mathtt{cons} = \lambda h.\,\allowbreak \lambda t.\,\allowbreak \lambda c.\,\allowbreak \lambda n.\,\allowbreak c\,\allowbreak h\,\allowbreak t
-\end{dmath*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{cons} = \lambda h.\,
+\lambda t.\,
+\lambda c.\,
+\lambda n.\,
+c\,
+h\,
+t
+\end{autobreak}
+\end{align*}
 \smallskip\noindent\textit{the element}\par\nobreak
-\begin{dmath*}
-0 = \lambda s.\,\allowbreak \lambda z.\,\allowbreak z
-\end{dmath*}
+\begin{align*}
+\begin{autobreak}
+0 = \lambda s.\,
+\lambda z.\,
+z
+\end{autobreak}
+\end{align*}
 \smallskip\noindent\textit{the cyclic stream}\par\nobreak
-\begin{dmath*}
-r = Y\,\allowbreak (\mathtt{cons}\,\allowbreak 0)
-\end{dmath*}
+\begin{align*}
+\begin{autobreak}
+r = Y\,
+(\mathtt{cons}\,
+0)
+\end{autobreak}
+\end{align*}

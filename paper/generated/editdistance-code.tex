@@ -2,84 +2,361 @@
 % regenerate with: python -m tablambda_examples._editdistance_code
 
 \smallskip\noindent\textit{fixed point}\par\nobreak
-\begin{dmath*}
-Y = \lambda f.\,\allowbreak (\lambda x.\,\allowbreak f\,\allowbreak (x\,\allowbreak x))\,\allowbreak (\lambda x.\,\allowbreak f\,\allowbreak (x\,\allowbreak x))
-\end{dmath*}
+\begin{align*}
+\begin{autobreak}
+Y = \lambda f.\,
+(\lambda x.\,
+f\,
+(x\,
+x))\,
+(\lambda x.\,
+f\,
+(x\,
+x))
+\end{autobreak}
+\end{align*}
 \smallskip\noindent\textit{Scott booleans}\par\nobreak
-\begin{dmath*}
-\mathtt{true} = \lambda a.\,\allowbreak \lambda b.\,\allowbreak a
-\end{dmath*}
-\begin{dmath*}
-\mathtt{false} = \lambda a.\,\allowbreak \lambda b.\,\allowbreak b
-\end{dmath*}
-\begin{dmath*}
-\mathtt{and} = \lambda p.\,\allowbreak \lambda q.\,\allowbreak p\,\allowbreak q\,\allowbreak \mathtt{false}
-\end{dmath*}
-\begin{dmath*}
-\mathtt{or} = \lambda p.\,\allowbreak \lambda q.\,\allowbreak p\,\allowbreak \mathtt{true}\,\allowbreak q
-\end{dmath*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{true} = \lambda a.\,
+\lambda b.\,
+a
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{false} = \lambda a.\,
+\lambda b.\,
+b
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{and} = \lambda p.\,
+\lambda q.\,
+p\,
+q\,
+\mathtt{false}
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{or} = \lambda p.\,
+\lambda q.\,
+p\,
+\mathtt{true}\,
+q
+\end{autobreak}
+\end{align*}
 \smallskip\noindent\textit{Scott lists (nil is also the BinNat zero)}\par\nobreak
-\begin{dmath*}
-\mathtt{nil} = \lambda c.\,\allowbreak \lambda n.\,\allowbreak n
-\end{dmath*}
-\begin{dmath*}
-\mathtt{cons} = \lambda h.\,\allowbreak \lambda t.\,\allowbreak \lambda c.\,\allowbreak \lambda n.\,\allowbreak c\,\allowbreak h\,\allowbreak t
-\end{dmath*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{nil} = \lambda c.\,
+\lambda n.\,
+n
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{cons} = \lambda h.\,
+\lambda t.\,
+\lambda c.\,
+\lambda n.\,
+c\,
+h\,
+t
+\end{autobreak}
+\end{align*}
 \smallskip\noindent\textit{BinNat bit operations}\par\nobreak
-\begin{dmath*}
-\mathtt{one} = \mathtt{cons}\,\allowbreak \mathtt{true}\,\allowbreak \mathtt{nil}
-\end{dmath*}
-\begin{dmath*}
-\mathtt{not} = \lambda \mathit{bit}.\,\allowbreak \mathit{bit}\,\allowbreak \mathtt{false}\,\allowbreak \mathtt{true}
-\end{dmath*}
-\begin{dmath*}
-\mathtt{xor} = \lambda \mathit{left}.\,\allowbreak \lambda \mathit{right}.\,\allowbreak \mathit{left}\,\allowbreak (\mathtt{not}\,\allowbreak \mathit{right})\,\allowbreak \mathit{right}
-\end{dmath*}
-\begin{dmath*}
-\mathtt{maj} = \lambda \mathit{first}.\,\allowbreak \lambda \mathit{second}.\,\allowbreak \lambda \mathit{third}.\,\allowbreak \mathtt{or}\,\allowbreak (\mathtt{and}\,\allowbreak \mathit{first}\,\allowbreak \mathit{second})\,\allowbreak (\mathtt{or}\,\allowbreak (\mathtt{and}\,\allowbreak \mathit{first}\,\allowbreak \mathit{third})\,\allowbreak (\mathtt{and}\,\allowbreak \mathit{second}\,\allowbreak \mathit{third}))
-\end{dmath*}
-\begin{dmath*}
-\mathtt{biteq} = \lambda \mathit{left}.\,\allowbreak \lambda \mathit{right}.\,\allowbreak \mathit{left}\,\allowbreak \mathit{right}\,\allowbreak (\mathtt{not}\,\allowbreak \mathit{right})
-\end{dmath*}
-\begin{dmath*}
-\mathtt{bitcmp} = \lambda x.\,\allowbreak \lambda y.\,\allowbreak \mathtt{biteq}\,\allowbreak x\,\allowbreak y\,\allowbreak \mathtt{equal}\,\allowbreak (x\,\allowbreak \mathtt{greater}\,\allowbreak \mathtt{less})
-\end{dmath*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{one} = \mathtt{cons}\,
+\mathtt{true}\,
+\mathtt{nil}
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{not} = \lambda \mathit{bit}.\,
+\mathit{bit}\,
+\mathtt{false}\,
+\mathtt{true}
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{xor} = \lambda \mathit{left}.\,
+\lambda \mathit{right}.\,
+\mathit{left}\,
+(\mathtt{not}\,
+\mathit{right})\,
+\mathit{right}
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{maj} = \lambda \mathit{first}.\,
+\lambda \mathit{second}.\,
+\lambda \mathit{third}.\,
+\mathtt{or}\,
+(\mathtt{and}\,
+\mathit{first}\,
+\mathit{second})\,
+(\mathtt{or}\,
+(\mathtt{and}\,
+\mathit{first}\,
+\mathit{third})\,
+(\mathtt{and}\,
+\mathit{second}\,
+\mathit{third}))
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{biteq} = \lambda \mathit{left}.\,
+\lambda \mathit{right}.\,
+\mathit{left}\,
+\mathit{right}\,
+(\mathtt{not}\,
+\mathit{right})
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{bitcmp} = \lambda x.\,
+\lambda y.\,
+\mathtt{biteq}\,
+x\,
+y\,
+\mathtt{equal}\,
+(x\,
+\mathtt{greater}\,
+\mathtt{less})
+\end{autobreak}
+\end{align*}
 \smallskip\noindent\textit{comparison verdicts (a verdict picks one of less, equal, greater)}\par\nobreak
-\begin{dmath*}
-\mathtt{less} = \lambda \mathit{less}.\,\allowbreak \lambda \mathit{equal}.\,\allowbreak \lambda \mathit{greater}.\,\allowbreak \mathit{less}
-\end{dmath*}
-\begin{dmath*}
-\mathtt{equal} = \lambda \mathit{less}.\,\allowbreak \lambda \mathit{equal}.\,\allowbreak \lambda \mathit{greater}.\,\allowbreak \mathit{equal}
-\end{dmath*}
-\begin{dmath*}
-\mathtt{greater} = \lambda \mathit{less}.\,\allowbreak \lambda \mathit{equal}.\,\allowbreak \lambda \mathit{greater}.\,\allowbreak \mathit{greater}
-\end{dmath*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{less} = \lambda \mathit{less}.\,
+\lambda \mathit{equal}.\,
+\lambda \mathit{greater}.\,
+\mathit{less}
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{equal} = \lambda \mathit{less}.\,
+\lambda \mathit{equal}.\,
+\lambda \mathit{greater}.\,
+\mathit{equal}
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{greater} = \lambda \mathit{less}.\,
+\lambda \mathit{equal}.\,
+\lambda \mathit{greater}.\,
+\mathit{greater}
+\end{autobreak}
+\end{align*}
 \smallskip\noindent\textit{BinNat arithmetic and comparison}\par\nobreak
-\begin{dmath*}
-\mathtt{iszero} = Y\,\allowbreak (\lambda \mathit{iszero}.\,\allowbreak \lambda n.\,\allowbreak n\,\allowbreak (\lambda \mathit{bit}.\,\allowbreak \lambda \mathit{rest}.\,\allowbreak \mathit{bit}\,\allowbreak \mathtt{false}\,\allowbreak (\mathit{iszero}\,\allowbreak \mathit{rest}))\,\allowbreak \mathtt{true})
-\end{dmath*}
-\begin{dmath*}
-\mathtt{addc} = Y\,\allowbreak (\lambda \mathit{addc}.\,\allowbreak \lambda \mathit{carry}.\,\allowbreak \lambda a.\,\allowbreak \lambda b.\,\allowbreak a\,\allowbreak (\lambda x.\,\allowbreak \lambda \mathit{xs}.\,\allowbreak b\,\allowbreak (\lambda y.\,\allowbreak \lambda \mathit{ys}.\,\allowbreak \mathtt{cons}\,\allowbreak (\mathtt{xor}\,\allowbreak (\mathtt{xor}\,\allowbreak x\,\allowbreak y)\,\allowbreak \mathit{carry})\,\allowbreak (\mathit{addc}\,\allowbreak (\mathtt{maj}\,\allowbreak x\,\allowbreak y\,\allowbreak \mathit{carry})\,\allowbreak \mathit{xs}\,\allowbreak \mathit{ys}))\,\allowbreak (\mathtt{cons}\,\allowbreak (\mathtt{xor}\,\allowbreak x\,\allowbreak \mathit{carry})\,\allowbreak (\mathit{addc}\,\allowbreak (\mathtt{and}\,\allowbreak x\,\allowbreak \mathit{carry})\,\allowbreak \mathit{xs}\,\allowbreak \mathtt{nil})))\,\allowbreak (b\,\allowbreak (\lambda y.\,\allowbreak \lambda \mathit{ys}.\,\allowbreak \mathtt{cons}\,\allowbreak (\mathtt{xor}\,\allowbreak y\,\allowbreak \mathit{carry})\,\allowbreak (\mathit{addc}\,\allowbreak (\mathtt{and}\,\allowbreak y\,\allowbreak \mathit{carry})\,\allowbreak \mathtt{nil}\,\allowbreak \mathit{ys}))\,\allowbreak (\mathit{carry}\,\allowbreak \mathtt{one}\,\allowbreak \mathtt{nil})))
-\end{dmath*}
-\begin{dmath*}
-\mathtt{add} = \lambda a.\,\allowbreak \lambda b.\,\allowbreak \mathtt{addc}\,\allowbreak \mathtt{false}\,\allowbreak a\,\allowbreak b
-\end{dmath*}
-\begin{dmath*}
-\mathtt{succ} = \lambda n.\,\allowbreak \mathtt{add}\,\allowbreak n\,\allowbreak \mathtt{one}
-\end{dmath*}
-\begin{dmath*}
-\mathtt{cmp} = Y\,\allowbreak (\lambda \mathit{cmp}.\,\allowbreak \lambda a.\,\allowbreak \lambda b.\,\allowbreak a\,\allowbreak (\lambda x.\,\allowbreak \lambda \mathit{xs}.\,\allowbreak b\,\allowbreak (\lambda y.\,\allowbreak \lambda \mathit{ys}.\,\allowbreak \mathit{cmp}\,\allowbreak \mathit{xs}\,\allowbreak \mathit{ys}\,\allowbreak \mathtt{less}\,\allowbreak (\mathtt{bitcmp}\,\allowbreak x\,\allowbreak y)\,\allowbreak \mathtt{greater})\,\allowbreak (\mathtt{iszero}\,\allowbreak (\mathtt{cons}\,\allowbreak x\,\allowbreak \mathit{xs})\,\allowbreak \mathtt{equal}\,\allowbreak \mathtt{greater}))\,\allowbreak (b\,\allowbreak (\lambda y.\,\allowbreak \lambda \mathit{ys}.\,\allowbreak \mathtt{iszero}\,\allowbreak (\mathtt{cons}\,\allowbreak y\,\allowbreak \mathit{ys})\,\allowbreak \mathtt{equal}\,\allowbreak \mathtt{less})\,\allowbreak \mathtt{equal}))
-\end{dmath*}
-\begin{dmath*}
-\mathtt{eq} = \lambda a.\,\allowbreak \lambda b.\,\allowbreak \mathtt{cmp}\,\allowbreak a\,\allowbreak b\,\allowbreak \mathtt{false}\,\allowbreak \mathtt{true}\,\allowbreak \mathtt{false}
-\end{dmath*}
-\begin{dmath*}
-\mathtt{min} = \lambda a.\,\allowbreak \lambda b.\,\allowbreak \mathtt{cmp}\,\allowbreak a\,\allowbreak b\,\allowbreak a\,\allowbreak a\,\allowbreak b
-\end{dmath*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{iszero} = Y\,
+(\lambda \mathit{iszero}.\,
+\lambda n.\,
+n\,
+(\lambda \mathit{bit}.\,
+\lambda \mathit{rest}.\,
+\mathit{bit}\,
+\mathtt{false}\,
+(\mathit{iszero}\,
+\mathit{rest}))\,
+\mathtt{true})
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{addc} = Y\,
+(\lambda \mathit{addc}.\,
+\lambda \mathit{carry}.\,
+\lambda a.\,
+\lambda b.\,
+a\,
+(\lambda x.\,
+\lambda \mathit{xs}.\,
+b\,
+(\lambda y.\,
+\lambda \mathit{ys}.\,
+\mathtt{cons}\,
+(\mathtt{xor}\,
+(\mathtt{xor}\,
+x\,
+y)\,
+\mathit{carry})\,
+(\mathit{addc}\,
+(\mathtt{maj}\,
+x\,
+y\,
+\mathit{carry})\,
+\mathit{xs}\,
+\mathit{ys}))\,
+(\mathtt{cons}\,
+(\mathtt{xor}\,
+x\,
+\mathit{carry})\,
+(\mathit{addc}\,
+(\mathtt{and}\,
+x\,
+\mathit{carry})\,
+\mathit{xs}\,
+\mathtt{nil})))\,
+(b\,
+(\lambda y.\,
+\lambda \mathit{ys}.\,
+\mathtt{cons}\,
+(\mathtt{xor}\,
+y\,
+\mathit{carry})\,
+(\mathit{addc}\,
+(\mathtt{and}\,
+y\,
+\mathit{carry})\,
+\mathtt{nil}\,
+\mathit{ys}))\,
+(\mathit{carry}\,
+\mathtt{one}\,
+\mathtt{nil})))
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{add} = \lambda a.\,
+\lambda b.\,
+\mathtt{addc}\,
+\mathtt{false}\,
+a\,
+b
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{succ} = \lambda n.\,
+\mathtt{add}\,
+n\,
+\mathtt{one}
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{cmp} = Y\,
+(\lambda \mathit{cmp}.\,
+\lambda a.\,
+\lambda b.\,
+a\,
+(\lambda x.\,
+\lambda \mathit{xs}.\,
+b\,
+(\lambda y.\,
+\lambda \mathit{ys}.\,
+\mathit{cmp}\,
+\mathit{xs}\,
+\mathit{ys}\,
+\mathtt{less}\,
+(\mathtt{bitcmp}\,
+x\,
+y)\,
+\mathtt{greater})\,
+(\mathtt{iszero}\,
+(\mathtt{cons}\,
+x\,
+\mathit{xs})\,
+\mathtt{equal}\,
+\mathtt{greater}))\,
+(b\,
+(\lambda y.\,
+\lambda \mathit{ys}.\,
+\mathtt{iszero}\,
+(\mathtt{cons}\,
+y\,
+\mathit{ys})\,
+\mathtt{equal}\,
+\mathtt{less})\,
+\mathtt{equal}))
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{eq} = \lambda a.\,
+\lambda b.\,
+\mathtt{cmp}\,
+a\,
+b\,
+\mathtt{false}\,
+\mathtt{true}\,
+\mathtt{false}
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{min} = \lambda a.\,
+\lambda b.\,
+\mathtt{cmp}\,
+a\,
+b\,
+a\,
+a\,
+b
+\end{autobreak}
+\end{align*}
 \smallskip\noindent\textit{edit distance}\par\nobreak
-\begin{dmath*}
-\mathtt{len} = Y\,\allowbreak (\lambda \mathit{len}.\,\allowbreak \lambda \mathit{items}.\,\allowbreak \mathit{items}\,\allowbreak (\lambda \mathit{head}.\,\allowbreak \lambda \mathit{tail}.\,\allowbreak \mathtt{succ}\,\allowbreak (\mathit{len}\,\allowbreak \mathit{tail}))\,\allowbreak \mathtt{nil})
-\end{dmath*}
-\begin{dmath*}
-\mathtt{ed} = Y\,\allowbreak (\lambda \mathit{ed}.\,\allowbreak \lambda a.\,\allowbreak \lambda b.\,\allowbreak a\,\allowbreak (\lambda \mathit{head}_{a}.\,\allowbreak \lambda \mathit{tail}_{a}.\,\allowbreak b\,\allowbreak (\lambda \mathit{head}_{b}.\,\allowbreak \lambda \mathit{tail}_{b}.\,\allowbreak \mathtt{eq}\,\allowbreak \mathit{head}_{a}\,\allowbreak \mathit{head}_{b}\,\allowbreak (\mathit{ed}\,\allowbreak \mathit{tail}_{a}\,\allowbreak \mathit{tail}_{b})\,\allowbreak (\mathtt{succ}\,\allowbreak (\mathtt{min}\,\allowbreak (\mathit{ed}\,\allowbreak \mathit{tail}_{a}\,\allowbreak \mathit{tail}_{b})\,\allowbreak (\mathtt{min}\,\allowbreak (\mathit{ed}\,\allowbreak \mathit{tail}_{a}\,\allowbreak b)\,\allowbreak (\mathit{ed}\,\allowbreak a\,\allowbreak \mathit{tail}_{b})))))\,\allowbreak (\mathtt{len}\,\allowbreak a))\,\allowbreak (\mathtt{len}\,\allowbreak b))
-\end{dmath*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{len} = Y\,
+(\lambda \mathit{len}.\,
+\lambda \mathit{items}.\,
+\mathit{items}\,
+(\lambda \mathit{head}.\,
+\lambda \mathit{tail}.\,
+\mathtt{succ}\,
+(\mathit{len}\,
+\mathit{tail}))\,
+\mathtt{nil})
+\end{autobreak}
+\end{align*}
+\begin{align*}
+\begin{autobreak}
+\mathtt{ed} = Y\,
+(\lambda \mathit{ed}.\,
+\lambda a.\,
+\lambda b.\,
+a\,
+(\lambda \mathit{head}_{a}.\,
+\lambda \mathit{tail}_{a}.\,
+b\,
+(\lambda \mathit{head}_{b}.\,
+\lambda \mathit{tail}_{b}.\,
+\mathtt{eq}\,
+\mathit{head}_{a}\,
+\mathit{head}_{b}\,
+(\mathit{ed}\,
+\mathit{tail}_{a}\,
+\mathit{tail}_{b})\,
+(\mathtt{succ}\,
+(\mathtt{min}\,
+(\mathit{ed}\,
+\mathit{tail}_{a}\,
+\mathit{tail}_{b})\,
+(\mathtt{min}\,
+(\mathit{ed}\,
+\mathit{tail}_{a}\,
+b)\,
+(\mathit{ed}\,
+a\,
+\mathit{tail}_{b})))))\,
+(\mathtt{len}\,
+a))\,
+(\mathtt{len}\,
+b))
+\end{autobreak}
+\end{align*}

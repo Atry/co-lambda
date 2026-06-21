@@ -4,8 +4,8 @@ The appendix lists the pure-lambda term ``r = Y (cons 0)`` and the small library
 fixed-point combinator, the Scott list constructor, and the element. None of it is transcribed by hand;
 each definition is the actual ``Builder`` from the source, rendered by ``tablambda._hoas_latex`` with the
 bound-variable names the Python lambdas carry and the other constants shown by name, so a definition reads
-as itself and cross-references the rest. Each definition is a ``breqn`` ``dmath*``; the output is written to
-``paper/generated/cyclic-zeros-code.tex`` and ``\\input`` by the paper.
+as itself and cross-references the rest. Each definition is wrapped in ``align*`` + ``autobreak``; the output
+is written to ``paper/generated/cyclic-zeros-code.tex`` and ``\\input`` by the paper.
 
 ``tablambda-cyclic-zeros-code`` (``python -m tablambda_examples._cyclic_zeros_code``) rewrites it.
 """
@@ -19,7 +19,7 @@ from tablambda._hoas_latex import MATH_STYLE, render
 from tablambda._prelude import SCOTT_CONS, Y, ZERO
 
 from tablambda_examples._cyclic_zeros import STREAM_BUILDER
-from tablambda_examples._editdistance_code import _BREQN_STYLE
+from tablambda_examples._editdistance_code import _AUTOBREAK_STYLE
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
 _OUTPUT = _REPO_ROOT / "paper" / "generated" / "cyclic-zeros-code.tex"
@@ -47,15 +47,15 @@ def _names() -> "dict[int, str]":
 
 
 def code_listing() -> str:
-    """The committed LaTeX fragment: each definition a ``breqn`` ``dmath*``, rendered from its HOAS term."""
+    """The committed LaTeX fragment: each definition in ``align*`` + ``autobreak``, rendered from its HOAS term."""
     names = _names()
     parts = [_LATEX_HEADER]
     for heading, definitions in _GROUPS:
         parts.append(f"\\smallskip\\noindent\\textit{{{heading}}}\\par\\nobreak")
         for name, builder in definitions:
             left = MATH_STYLE.constant(name)
-            right = render(builder, names, _BREQN_STYLE)
-            parts.append(f"\\begin{{dmath*}}\n{left} = {right}\n\\end{{dmath*}}")
+            right = render(builder, names, _AUTOBREAK_STYLE)
+            parts.append(f"\\begin{{align*}}\n\\begin{{autobreak}}\n{left} = {right}\n\\end{{autobreak}}\n\\end{{align*}}")
     return "\n".join(parts) + "\n"
 
 
