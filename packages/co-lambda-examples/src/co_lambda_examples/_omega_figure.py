@@ -6,7 +6,7 @@ implementation (the self-contraction and the bottom verdict) before this draws t
 drift from what the interpreter does. The paper floats and captions the picture; this module owns its body.
 
 ``co-lambda-omega-figure`` (``python -m co_lambda_examples._omega_figure``) rewrites the committed
-``papers/co-lambda/generated/omega-graph.tex``.
+``paper/generated/omega-graph.tex``.
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ from pathlib import Path
 from co_lambda_examples._omega import solve_omega
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
-_OUTPUT = _REPO_ROOT / "papers" / "co-lambda" / "generated" / "omega-graph.tex"
+_OUTPUT = _REPO_ROOT / "paper" / "generated" / "omega-graph.tex"
 
 
 def render_tikz() -> str:

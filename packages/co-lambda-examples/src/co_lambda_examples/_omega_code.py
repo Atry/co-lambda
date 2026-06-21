@@ -4,7 +4,7 @@ The appendix lists the pure-lambda term ``Omega = omega omega`` and the self-app
 built from. None of it is transcribed by hand: each definition is rendered from the actual ``Builder`` by
 ``co_lambda._hoas_latex``, with ``omega`` shown by name inside ``Omega`` so the second line reads as the
 first applied to itself. Each definition is a ``breqn`` ``dmath*``; the output is written to
-``papers/co-lambda/generated/omega-code.tex`` and ``\\input`` by the paper.
+``paper/generated/omega-code.tex`` and ``\\input`` by the paper.
 
 ``co-lambda-omega-code`` (``python -m co_lambda_examples._omega_code``) rewrites it.
 """
@@ -21,7 +21,7 @@ from co_lambda_examples._editdistance_code import _BREQN_STYLE
 from co_lambda_examples._omega import OMEGA_BUILDER
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
-_OUTPUT = _REPO_ROOT / "papers" / "co-lambda" / "generated" / "omega-code.tex"
+_OUTPUT = _REPO_ROOT / "paper" / "generated" / "omega-code.tex"
 
 # A pass-through constant style, so a name in the ``names`` map is emitted as raw LaTeX (``\omega``) rather
 # than wrapped in ``\mathtt`` (the default for multi-character names), letting the Greek render.

@@ -11,7 +11,7 @@ several callers share (the collapse the tabling buys) is a node with several inc
 floats and captions the picture; this module owns only its body.
 
 ``co-lambda-editdistance-figure`` (``python -m co_lambda_examples._editdistance_figure``) rewrites the
-committed ``papers/co-lambda/generated/editdistance-trace.tex``.
+committed ``paper/generated/editdistance-trace.tex``.
 """
 
 from __future__ import annotations
@@ -31,7 +31,7 @@ from co_lambda._pyast import binnat_to_int
 from co_lambda_examples._editdistance import EDIT_DISTANCE, _string_to_list
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
-_OUTPUT = _REPO_ROOT / "papers" / "co-lambda" / "generated" / "editdistance-trace.tex"
+_OUTPUT = _REPO_ROOT / "paper" / "generated" / "editdistance-trace.tex"
 
 # The interner recursion (substitution) is as deep as the subproblem-dependency diagonal plus the BinNat
 # arithmetic; raise the limit for the build and restore it, as the interpreter's own driver does.

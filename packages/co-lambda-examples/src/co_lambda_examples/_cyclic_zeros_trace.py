@@ -8,7 +8,7 @@ step is produced by ``_cyclic_zeros.walk`` over the real interned terms, the exp
 to ``weak_head_normalize``, never hand-written.
 
 ``co-lambda-cyclic-zeros-trace`` (``python -m co_lambda_examples._cyclic_zeros_trace``) rewrites the
-committed ``papers/co-lambda/generated/cyclic-zeros-trace.tex``.
+committed ``paper/generated/cyclic-zeros-trace.tex``.
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ from pathlib import Path
 from co_lambda_examples._cyclic_zeros import StreamStep, walk
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
-_OUTPUT = _REPO_ROOT / "papers" / "co-lambda" / "generated" / "cyclic-zeros-trace.tex"
+_OUTPUT = _REPO_ROOT / "paper" / "generated" / "cyclic-zeros-trace.tex"
 
 
 def render_trace(steps: "tuple[StreamStep, ...]") -> str:

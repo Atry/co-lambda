@@ -7,7 +7,7 @@ node per distinct state the solver tables (``r`` and the self-application ``W·W
 highlighted self-loop. The paper floats and captions the picture; this module owns only its body.
 
 ``co-lambda-cyclic-zeros-figure`` (``python -m co_lambda_examples._cyclic_zeros_figure``) rewrites the
-committed ``papers/co-lambda/generated/cyclic-zeros-graph.tex``.
+committed ``paper/generated/cyclic-zeros-graph.tex``.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from pathlib import Path
 from co_lambda_examples._cyclic_zeros import StreamState, walk
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
-_OUTPUT = _REPO_ROOT / "papers" / "co-lambda" / "generated" / "cyclic-zeros-graph.tex"
+_OUTPUT = _REPO_ROOT / "paper" / "generated" / "cyclic-zeros-graph.tex"
 
 _DX = 2.8
 

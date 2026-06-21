@@ -13,7 +13,7 @@ A subproblem is the interned node ``App(App(EDIT_DISTANCE, suffix_a), suffix_b)`
 solver touches (the BinNat arithmetic, the list destructuring) is filtered out. The result is rendered as
 an indented call tree: a COMPUTE node nests its children beneath it, and a HIT is a leaf naming a subproblem
 solved earlier, so the reuse the tabling buys is visible directly. The listing goes to
-``papers/co-lambda/generated/editdistance-trace-full.tex``, ``\\input`` by the paper.
+``paper/generated/editdistance-trace-full.tex``, ``\\input`` by the paper.
 
 ``co-lambda-editdistance-trace`` (``python -m co_lambda_examples._editdistance_trace``) rewrites it.
 """
@@ -37,7 +37,7 @@ from fixpoints._core import _FIXPOINT_SENTINEL, _clear_fixpoint_attr, fixpoint_c
 from co_lambda_examples._editdistance import EDIT_DISTANCE, _string_to_list
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
-_OUTPUT = _REPO_ROOT / "papers" / "co-lambda" / "generated" / "editdistance-trace-full.tex"
+_OUTPUT = _REPO_ROOT / "paper" / "generated" / "editdistance-trace-full.tex"
 
 _RECURSION_LIMIT = 100_000
 

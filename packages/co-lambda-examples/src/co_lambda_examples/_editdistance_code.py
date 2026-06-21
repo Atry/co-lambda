@@ -6,7 +6,7 @@ itself. None of it is transcribed by hand. Each definition is the actual ``Build
 rendered by ``co_lambda._hoas_latex`` with the bound-variable names the Python lambdas carry and with the
 other library constants shown by name (recognised by object identity), so a definition reads as itself and
 cross-references the rest. Each definition is a ``breqn`` ``dmath*`` so the long terms wrap automatically;
-the output is written to ``papers/co-lambda/generated/editdistance-code.tex`` and ``\\input`` by the paper.
+the output is written to ``paper/generated/editdistance-code.tex`` and ``\\input`` by the paper.
 
 ``co-lambda-editdistance-code`` (``python -m co_lambda_examples._editdistance_code``) rewrites it.
 """
@@ -23,7 +23,7 @@ from co_lambda._prelude import AND, FALSE, OR, SCOTT_CONS, SCOTT_NIL, TRUE, Y
 from co_lambda_examples._editdistance import EDIT_DISTANCE, LENGTH
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
-_OUTPUT = _REPO_ROOT / "papers" / "co-lambda" / "generated" / "editdistance-code.tex"
+_OUTPUT = _REPO_ROOT / "paper" / "generated" / "editdistance-code.tex"
 
 # (group heading, ((name, builder), ...)). Order is dependency order: a definition uses only names above
 # it. ``zero`` is ``nil`` (the BinNat 0 is the empty list of bits), the same term, so it is not relisted.

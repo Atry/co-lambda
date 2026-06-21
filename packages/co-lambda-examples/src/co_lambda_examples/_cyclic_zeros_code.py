@@ -5,7 +5,7 @@ fixed-point combinator, the Scott list constructor, and the element. None of it 
 each definition is the actual ``Builder`` from the source, rendered by ``co_lambda._hoas_latex`` with the
 bound-variable names the Python lambdas carry and the other constants shown by name, so a definition reads
 as itself and cross-references the rest. Each definition is a ``breqn`` ``dmath*``; the output is written to
-``papers/co-lambda/generated/cyclic-zeros-code.tex`` and ``\\input`` by the paper.
+``paper/generated/cyclic-zeros-code.tex`` and ``\\input`` by the paper.
 
 ``co-lambda-cyclic-zeros-code`` (``python -m co_lambda_examples._cyclic_zeros_code``) rewrites it.
 """
@@ -22,7 +22,7 @@ from co_lambda_examples._cyclic_zeros import STREAM_BUILDER
 from co_lambda_examples._editdistance_code import _BREQN_STYLE
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
-_OUTPUT = _REPO_ROOT / "papers" / "co-lambda" / "generated" / "cyclic-zeros-code.tex"
+_OUTPUT = _REPO_ROOT / "paper" / "generated" / "cyclic-zeros-code.tex"
 
 # (group heading, ((name, builder), ...)). Order is dependency order: a definition uses only names above it.
 _GROUPS: "tuple[tuple[str, tuple[tuple[str, Builder], ...]], ...]" = (

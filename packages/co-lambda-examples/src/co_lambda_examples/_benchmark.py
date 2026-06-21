@@ -17,7 +17,7 @@ wall-clock execution time, peak resident memory (RSS), and the number of TABLED 
 materialized (interpreter: interned lambda ``Node`` count; compiled: interned ``Thunk`` and closure
 instances). Each cell runs in a fresh subprocess (clean interner, absolute counts); the interpreted and
 compiled results are checked equal. The bootstrap is heavy (minutes, gigabytes), gated behind
-``FOL_REGEN_DEFUN=1``. The result is written to ``papers/co-lambda/generated/defun-benchmark.tex``.
+``FOL_REGEN_DEFUN=1``. The result is written to ``paper/generated/defun-benchmark.tex``.
 ``co-lambda-defun-benchmark`` runs ``main``; ``--measure <approach> <app> <input>`` is the worker.
 """
 
@@ -37,7 +37,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
-_OUTPUT = _REPO_ROOT / "papers" / "co-lambda" / "generated" / "defun-benchmark.tex"
+_OUTPUT = _REPO_ROOT / "paper" / "generated" / "defun-benchmark.tex"
 
 _RECURSION_LIMIT = 1_000_000
 

@@ -81,33 +81,33 @@
         };
 
       coLambdaSources = lib.fileset.unions [
-        ../papers/co-lambda/co-lambda.tex
-        ../papers/co-lambda/supplement.tex
-        ../papers/co-lambda/supplement-xref.tex
-        ../papers/co-lambda/submission.tex
-        ../papers/co-lambda/preprint.tex
-        ../papers/co-lambda/acmart.cls
-        ../papers/co-lambda/ACM-Reference-Format.bst
-        ../papers/co-lambda/references.bib
-        ../papers/co-lambda/latexmkrc
-        ../papers/co-lambda/generated
+        ../paper/co-lambda.tex
+        ../paper/supplement.tex
+        ../paper/supplement-xref.tex
+        ../paper/submission.tex
+        ../paper/preprint.tex
+        ../paper/acmart.cls
+        ../paper/ACM-Reference-Format.bst
+        ../paper/references.bib
+        ../paper/latexmkrc
+        ../paper/generated
       ];
 
       coLambdaAppendixPdf = mkPaperPdf {
         name = "co-lambda-appendix.pdf";
-        root = ../papers/co-lambda;
+        root = ../paper;
         fileset = coLambdaSources;
       };
 
       coLambdaSubmissionPdf = mkPaperPdf {
         name = "co-lambda-submission.pdf";
-        root = ../papers/co-lambda;
+        root = ../paper;
         fileset = coLambdaSources;
         entry = "submission";
       };
 
       coLambdaSrc = lib.fileset.toSource {
-        root = ../papers/co-lambda;
+        root = ../paper;
         fileset = coLambdaSources;
       };
 

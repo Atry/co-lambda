@@ -21,7 +21,7 @@ This repository is a uv workspace with three packages and the paper:
 - [`packages/co-lambda-examples`](packages/co-lambda-examples) holds example
   applications written as pure lambda terms, their committed defunctionalized
   (compiled) modules, and the interpreted versus compiled benchmark.
-- [`papers/co-lambda`](papers/co-lambda) is the LaTeX source whose semantics the
+- [`paper`](paper) is the LaTeX source whose semantics the
   interpreter realizes.
 
 Start with the [`co-lambda` package README](packages/co-lambda) for the shape

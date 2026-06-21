@@ -6,7 +6,7 @@ stack with no layer exposed, and returns its running approximation, bottom, whic
 assert that in prose, we read it off the implementation: ``_omega.solve_omega`` checks the self-contraction
 (an interning identity) and the bottom verdict before the trace is rendered. The listing shows the step
 sequence so the re-entry that forces bottom in finite time is visible. The output goes to
-``papers/co-lambda/generated/omega-trace.tex``, ``\\input`` by the paper.
+``paper/generated/omega-trace.tex``, ``\\input`` by the paper.
 
 ``co-lambda-omega-trace`` (``python -m co_lambda_examples._omega_trace``) rewrites it.
 """
@@ -18,7 +18,7 @@ from pathlib import Path
 from co_lambda_examples._omega import trace_lines
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
-_OUTPUT = _REPO_ROOT / "papers" / "co-lambda" / "generated" / "omega-trace.tex"
+_OUTPUT = _REPO_ROOT / "paper" / "generated" / "omega-trace.tex"
 
 
 def render_trace() -> str:
