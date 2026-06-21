@@ -534,6 +534,7 @@ requires-dist = [
 
 [[package]]
 name = "co-lambda-examples"
+version = "0.0.0.dev0"
 source = { editable = "packages/co-lambda-examples" }
 dependencies = [
     { name = "co-lambda", marker = "implementation_name == 'cpython' or implementation_name == 'pypy'" },
