@@ -1,9 +1,9 @@
-# co-lambda
+# tablambda
 
-[![CI](https://github.com/Atry/co-lambda/actions/workflows/ci.yml/badge.svg)](https://github.com/Atry/co-lambda/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/co-lambda)](https://pypi.org/project/co-lambda/)
-[![Python versions](https://img.shields.io/pypi/pyversions/co-lambda)](https://pypi.org/project/co-lambda/)
-![License: MIT](https://img.shields.io/pypi/l/co-lambda)
+[![CI](https://github.com/Atry/tablambda/actions/workflows/ci.yml/badge.svg)](https://github.com/Atry/tablambda/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/tablambda)](https://pypi.org/project/tablambda/)
+[![Python versions](https://img.shields.io/pypi/pyversions/tablambda)](https://pypi.org/project/tablambda/)
+![License: MIT](https://img.shields.io/pypi/l/tablambda)
 
 The artifact for the paper *Cyclic Graphs and Memoization in Pure
 $\lambda$-Calculus*. It is a pure lambda-calculus interpreter and compiler in
@@ -18,9 +18,9 @@ This repository is a uv workspace with three packages and the paper:
 - [`packages/fixpoints`](packages/fixpoints) provides the least-fixpoint
   cached-property infrastructure that drives mutually recursive computations to a
   fixpoint.
-- [`packages/co-lambda`](packages/co-lambda) is the pure lambda-calculus
-  interpreter and compiler (published to PyPI as `co-lambda`).
-- [`packages/co-lambda-examples`](packages/co-lambda-examples) holds example
+- [`packages/tablambda`](packages/tablambda) is the pure lambda-calculus
+  interpreter and compiler (published to PyPI as `tablambda`).
+- [`packages/tablambda-examples`](packages/tablambda-examples) holds example
   applications written as pure lambda terms, their committed defunctionalized
   (compiled) modules, and the interpreted versus compiled benchmark.
 - [`paper`](paper) is the LaTeX source whose semantics the
@@ -29,7 +29,7 @@ This repository is a uv workspace with three packages and the paper:
 ## Install
 
 ```sh
-pip install co-lambda
+pip install tablambda
 ```
 
 ## Development
@@ -42,10 +42,10 @@ artifacts as Nix packages:
 direnv exec . uv run pytest
 
 # Run the interpreted versus compiled benchmark
-nix build -L .#co-lambda-benchmark-pypy
+nix build -L .#tablambda-benchmark-pypy
 
 # Build the paper's supplementary material bundle
-nix build -L .#co-lambda-supplementary-material
+nix build -L .#tablambda-supplementary-material
 ```
 
 ## License

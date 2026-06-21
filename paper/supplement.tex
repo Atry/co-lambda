@@ -2,7 +2,7 @@
 %% POPL supplemental material: the appendices only.
 %% POPL 2027 requires all appendices to be submitted as supplemental
 %% material rather than as part of the main submission PDF; this entry
-%% compiles exactly that part of the shared body in co-lambda.tex.
+%% compiles exactly that part of the shared body in tablambda.tex.
 %%
 %% References back into the main matter resolve via xr-hyper, reading the
 %% labels of submission.tex; latexmk builds it automatically (see
@@ -12,6 +12,6 @@
 \usepackage{xr-hyper}
 \input{xr-tocindent-filter}
 \externaldocument{submission}[submission.pdf]
-\newif\ifColambdaBody\ColambdaBodyfalse
-\newif\ifColambdaAppendix\ColambdaAppendixtrue
-\input{co-lambda}
+\newif\ifTablambdaBody\TablambdaBodyfalse
+\newif\ifTablambdaAppendix\TablambdaAppendixtrue
+\input{tablambda}

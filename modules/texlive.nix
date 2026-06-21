@@ -3,9 +3,9 @@
   # development environment can install the same TeX into its dev shell while this
   # subrepo only produces the appendix PDF artifact (no dev shell here).
   options.perSystem = flake-parts-lib.mkPerSystemOption ({ lib, ... }: {
-    options.coLambdaTexlivePackages = lib.mkOption {
+    options.tablambdaTexlivePackages = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      description = "TeXLive package names for the co-lambda paper build and the dev-shell TeX.";
+      description = "TeXLive package names for the tablambda paper build and the dev-shell TeX.";
     };
   });
   config.perSystem = { pkgs, lib, ... }:
@@ -80,8 +80,8 @@
           '';
         };
 
-      coLambdaSources = lib.fileset.unions [
-        ../paper/co-lambda.tex
+      tablambdaSources = lib.fileset.unions [
+        ../paper/tablambda.tex
         ../paper/supplement.tex
         ../paper/supplement-xref.tex
         ../paper/submission.tex
@@ -93,31 +93,31 @@
         ../paper/generated
       ];
 
-      coLambdaAppendixPdf = mkPaperPdf {
-        name = "co-lambda-appendix.pdf";
+      tablambdaAppendixPdf = mkPaperPdf {
+        name = "tablambda-appendix.pdf";
         root = ../paper;
-        fileset = coLambdaSources;
+        fileset = tablambdaSources;
       };
 
-      coLambdaSubmissionPdf = mkPaperPdf {
-        name = "co-lambda-submission.pdf";
+      tablambdaSubmissionPdf = mkPaperPdf {
+        name = "tablambda-submission.pdf";
         root = ../paper;
-        fileset = coLambdaSources;
+        fileset = tablambdaSources;
         entry = "submission";
       };
 
-      coLambdaSrc = lib.fileset.toSource {
+      tablambdaSrc = lib.fileset.toSource {
         root = ../paper;
-        fileset = coLambdaSources;
+        fileset = tablambdaSources;
       };
 
       # The arxiv submission bundle: build preprint.pdf, then tar the exact set of
       # source files latexmk recorded as inputs (from preprint.fls), dropping generated
       # outputs and .bbl and adding the .bib files. A buildable artifact so the
       # subproject owns its packaging logic.
-      coLambdaArxiv = pkgs.stdenv.mkDerivation {
-        name = "co-lambda-arxiv-submission.tar.gz";
-        src = coLambdaSrc;
+      tablambdaArxiv = pkgs.stdenv.mkDerivation {
+        name = "tablambda-arxiv-submission.tar.gz";
+        src = tablambdaSrc;
         nativeBuildInputs = [ paperTexlive pkgs.gnutar pkgs.gawk pkgs.gzip ];
         SOURCE_DATE_EPOCH = "1";
         buildPhase = ''
@@ -151,9 +151,9 @@
         '';
       };
     in {
-      coLambdaTexlivePackages = texlivePackages;
-      packages.co-lambda-appendix = coLambdaAppendixPdf;
-      packages.co-lambda-submission = coLambdaSubmissionPdf;
-      packages.co-lambda-arxiv = coLambdaArxiv;
+      tablambdaTexlivePackages = texlivePackages;
+      packages.tablambda-appendix = tablambdaAppendixPdf;
+      packages.tablambda-submission = tablambdaSubmissionPdf;
+      packages.tablambda-arxiv = tablambdaArxiv;
     };
 }

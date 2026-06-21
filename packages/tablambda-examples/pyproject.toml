@@ -1,0 +1,33 @@
+# No [build-system]: tablambda-examples is a virtual workspace member. uv installs
+# it (editable) so the tests and example CLIs work, but `uv build --all-packages`
+# produces no distribution for it, so it is never published to PyPI. This mirrors
+# mixinv2-examples and keeps the example case studies out of the published releases.
+[project]
+name = "tablambda-examples"
+version = "0.0.0.dev0"
+description = "Example applications for tablambda, their committed defunctionalized (compiled) modules, and the interpreted-vs-compiled benchmark"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [{ name = "Yang, Bo", email = "yang-bo@yang-bo.com" }]
+dependencies = ["tablambda"]
+
+[project.scripts]
+tablambda-defun-benchmark = "tablambda_examples._benchmark:main"
+tablambda-defun-artifacts = "tablambda_examples._artifacts:main"
+tablambda-defun-examples = "tablambda_examples._examples:main"
+tablambda-editdistance-figure = "tablambda_examples._editdistance_figure:main"
+tablambda-editdistance-code = "tablambda_examples._editdistance_code:main"
+tablambda-editdistance-trace = "tablambda_examples._editdistance_trace:main"
+tablambda-cyclic-zeros-figure = "tablambda_examples._cyclic_zeros_figure:main"
+tablambda-cyclic-zeros-trace = "tablambda_examples._cyclic_zeros_trace:main"
+tablambda-cyclic-zeros-code = "tablambda_examples._cyclic_zeros_code:main"
+tablambda-omega-figure = "tablambda_examples._omega_figure:main"
+tablambda-omega-trace = "tablambda_examples._omega_trace:main"
+tablambda-omega-code = "tablambda_examples._omega_code:main"
+
+[tool.uv]
+sources = { "tablambda" = { workspace = true } }
+
+[project.urls]
+Repository = "https://github.com/Atry/MIXINv2"

@@ -1,5 +1,5 @@
 [project]
-name = "co-lambda-workspace"
+name = "tablambda-workspace"
 version = "0.0.0.dev0"
 description = "A pure lambda-calculus interpreter that applies tabling to weak-head reduction, turning self-referential terms into finite cyclic graphs, with example applications and the accompanying paper"
 readme = "README.md"
@@ -7,10 +7,10 @@ license = "MIT"
 requires-python = ">=3.11"
 authors = [{ name = "Yang, Bo", email = "yang-bo@yang-bo.com" }]
 keywords = ["lambda-calculus", "tabling", "weak-head-reduction", "cyclic-graphs", "memoization", "least-fixpoint", "interpreter"]
-dependencies = ["co-lambda", "co-lambda-examples"]
+dependencies = ["tablambda", "tablambda-examples"]
 
 [project.urls]
-Repository = "https://github.com/Atry/co-lambda"
+Repository = "https://github.com/Atry/tablambda"
 
 [tool.uv]
 # Supported target environments: CPython 3.11 and PyPy 3.11 (PyPy 7.3.20 implements the
@@ -20,7 +20,7 @@ environments = [
     "implementation_name == 'cpython'",
     "implementation_name == 'pypy'",
 ]
-sources = { fixpoints = { workspace = true }, "co-lambda" = { workspace = true }, "co-lambda-examples" = { workspace = true } }
+sources = { fixpoints = { workspace = true }, "tablambda" = { workspace = true }, "tablambda-examples" = { workspace = true } }
 cache-keys = [
     { file = "pyproject.toml" },
     { git = { commit = true, tags = true } },
@@ -69,8 +69,8 @@ addopts = "--snapshot-warn-unused"
 include = [
     "packages/fixpoints/src",
     "packages/fixpoints/tests",
-    "packages/co-lambda/src",
-    "packages/co-lambda/tests",
-    "packages/co-lambda-examples/src",
-    "packages/co-lambda-examples/tests",
+    "packages/tablambda/src",
+    "packages/tablambda/tests",
+    "packages/tablambda-examples/src",
+    "packages/tablambda-examples/tests",
 ]

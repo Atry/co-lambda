@@ -4,9 +4,9 @@
   # virtualenv. This subrepo only produces the build artifacts (benchmark + supplementary
   # material); the editable dev env and dev shell live in the monorepo.
   options.perSystem = flake-parts-lib.mkPerSystemOption ({ lib, ... }: {
-    options.coLambdaPyprojectOverrides = lib.mkOption {
+    options.tablambdaPyprojectOverrides = lib.mkOption {
       type = lib.types.raw;
-      description = "Reusable uv2nix overlay (final: prev: {...}) of co-lambda's build-system fixes.";
+      description = "Reusable uv2nix overlay (final: prev: {...}) of tablambda's build-system fixes.";
     };
   });
   config.perSystem = { config, pkgs, lib, system, ... }:
@@ -29,7 +29,7 @@
 
       # Repo-specific: the virtual workspace-root package has no sources to install.
       localOverrides = final: prev: {
-        co-lambda-workspace = prev.co-lambda-workspace.overrideAttrs (_: {
+        tablambda-workspace = prev.tablambda-workspace.overrideAttrs (_: {
           buildPhase = "mkdir -p $out";
           installPhase = "true";
           nativeBuildInputs = [ ];
@@ -51,7 +51,7 @@
         localOverrides
       ]);
 
-      # --- PyPy runtime for co-lambda-benchmark ---
+      # --- PyPy runtime for tablambda-benchmark ---
       # The benchmark is CPU-bound interpreter/compiler work (deep tree walks, beta reduction),
       # the workload PyPy's JIT accelerates. pkgs.pypy3 is PyPy 7.3.20 (Python 3.11),
       # satisfying requires-python >= 3.11.
@@ -70,13 +70,13 @@
         localOverrides
       ]);
 
-      coLambdaBenchmarkPypy =
-        (pythonSetPypy.mkVirtualEnv "co-lambda-benchmark-pypy"
-          (builtins.removeAttrs workspace.deps.default [ "co-lambda-workspace" ])).overrideAttrs
+      tablambdaBenchmarkPypy =
+        (pythonSetPypy.mkVirtualEnv "tablambda-benchmark-pypy"
+          (builtins.removeAttrs workspace.deps.default [ "tablambda-workspace" ])).overrideAttrs
         (old: {
           venvIgnoreCollisions = [ "*" ];
           meta = (old.meta or { }) // {
-            mainProgram = "co-lambda-benchmark";
+            mainProgram = "tablambda-benchmark";
           };
         });
 
@@ -119,18 +119,18 @@
         grep -rl "Anonymous, Author" ${dir} > /dev/null
       '';
 
-      # --- Supplementary material for the co-lambda paper ---
-      # A standalone bundle of co_lambda and its only workspace dependency,
+      # --- Supplementary material for the tablambda paper ---
+      # A standalone bundle of tablambda and its only workspace dependency,
       # fixpoints, with a minimal virtual-workspace root so a reviewer can resolve and run
       # it without the rest of MIXINv2.
 
-      coLambdaSupplementarySourceFiles = lib.fileset.toSource {
+      tablambdaSupplementarySourceFiles = lib.fileset.toSource {
         root = ../.;
         fileset = lib.fileset.unions [
-          ../packages/co-lambda/src
-          ../packages/co-lambda/tests
-          ../packages/co-lambda/pyproject.toml
-          ../packages/co-lambda/README.md
+          ../packages/tablambda/src
+          ../packages/tablambda/tests
+          ../packages/tablambda/pyproject.toml
+          ../packages/tablambda/README.md
           ../packages/fixpoints/src
           ../packages/fixpoints/pyproject.toml
           ../packages/fixpoints/README.md
@@ -139,21 +139,21 @@
         ];
       };
 
-      coLambdaReviewerReadme = pkgs.writeText "README.md" ''
-        # co-lambda -- Supplementary Material
+      tablambdaReviewerReadme = pkgs.writeText "README.md" ''
+        # tablambda -- Supplementary Material
 
-        This archive contains `co_lambda`, an executable first-order-shape-relation
+        This archive contains `tablambda`, an executable first-order-shape-relation
         interpreter for the pure lambda-calculus, together with its only dependency
         `fixpoints`.
 
         ## Directory structure
 
-        - `co-lambda-appendix.pdf` -- the paper's appendices, submitted here as
+        - `tablambda-appendix.pdf` -- the paper's appendices, submitted here as
           supplemental material rather than in the main submission PDF.
-        - `packages/co-lambda/src/co_lambda/` -- the interpreter: the
+        - `packages/tablambda/src/tablambda/` -- the interpreter: the
           weak-head shape relation `Sh`, the least-fixpoint readout, and four pluggable
           position congruences.
-        - `packages/co-lambda/tests/` -- the paper's examples as tests, including the
+        - `packages/tablambda/tests/` -- the paper's examples as tests, including the
           cyclic stream `Y (cons 0)`, the unproductive cycles `Omega` and `Y (lambda x. x)`,
           the naive walk, and the ordinary `map` folding a cyclic list.
         - `packages/fixpoints/src/fixpoints/` -- least-fixpoint cached-property infrastructure.
@@ -164,35 +164,35 @@
 
         ```
         uv sync
-        uv run pytest packages/co-lambda/tests packages/fixpoints/tests
+        uv run pytest packages/tablambda/tests packages/fixpoints/tests
         ```
       '';
 
-      coLambdaWorkspacePyproject = pkgs.writeText "pyproject.toml" ''
+      tablambdaWorkspacePyproject = pkgs.writeText "pyproject.toml" ''
         [tool.uv.workspace]
-        members = ["packages/co-lambda", "packages/fixpoints"]
+        members = ["packages/tablambda", "packages/fixpoints"]
       '';
 
-      coLambdaSupplementaryMaterial = pkgs.stdenv.mkDerivation {
-        name = "co-lambda-supplementary-material.zip";
-        src = coLambdaSupplementarySourceFiles;
+      tablambdaSupplementaryMaterial = pkgs.stdenv.mkDerivation {
+        name = "tablambda-supplementary-material.zip";
+        src = tablambdaSupplementarySourceFiles;
         nativeBuildInputs = [ pkgs.zip pkgs.unzip ];
 
         buildPhase = ''
           cd ..
-          mv source co-lambda-supplementary-material
-          cd co-lambda-supplementary-material
+          mv source tablambda-supplementary-material
+          cd tablambda-supplementary-material
 
           # A minimal virtual-workspace root over just the two packages, and a
           # reviewer-oriented README. No uv.lock: the reviewer locks the two-package
           # workspace fresh, avoiding references to the absent MIXINv2 members.
-          cp ${coLambdaWorkspacePyproject} pyproject.toml
-          cp ${coLambdaReviewerReadme} README.md
+          cp ${tablambdaWorkspacePyproject} pyproject.toml
+          cp ${tablambdaReviewerReadme} README.md
 
           # The paper's appendices as a separate PDF (POPL 2027 requires
           # appendices as supplemental material). Built from supplement.tex
           # with the acmart `anonymous' option, so it carries no identity.
-          cp ${config.packages.co-lambda-appendix} co-lambda-appendix.pdf
+          cp ${config.packages.tablambda-appendix} tablambda-appendix.pdf
 
           # Anonymize identity in the package metadata (authors, repository URL).
           shopt -s globstar nullglob
@@ -203,37 +203,37 @@
 
           cd ..
           zip -r --latest-time \
-            $TMPDIR/co-lambda-supplementary-material.zip \
-            co-lambda-supplementary-material
+            $TMPDIR/tablambda-supplementary-material.zip \
+            tablambda-supplementary-material
         '';
 
         installPhase = ''
-          cp $TMPDIR/co-lambda-supplementary-material.zip $out
+          cp $TMPDIR/tablambda-supplementary-material.zip $out
         '';
 
         doInstallCheck = true;
         installCheckPhase = ''
           unzip $out -d $TMPDIR/verify
-          base=$TMPDIR/verify/co-lambda-supplementary-material
+          base=$TMPDIR/verify/tablambda-supplementary-material
 
           # No identity leaks.
           ${assertNoIdentityLeak "$base"}
 
           # Both packages present.
-          test -d $base/packages/co-lambda/src/co_lambda
-          test -d $base/packages/co-lambda/tests
+          test -d $base/packages/tablambda/src/tablambda
+          test -d $base/packages/tablambda/tests
           test -d $base/packages/fixpoints/src/fixpoints
 
           # The appendix PDF is bundled.
-          test -f $base/co-lambda-appendix.pdf
+          test -f $base/tablambda-appendix.pdf
 
           # Anonymization applied.
           ${assertAnonymized "$base"}
         '';
       };
     in {
-      coLambdaPyprojectOverrides = genericPyprojectOverrides;
-      packages.co-lambda-benchmark-pypy = coLambdaBenchmarkPypy;
-      packages.co-lambda-supplementary-material = coLambdaSupplementaryMaterial;
+      tablambdaPyprojectOverrides = genericPyprojectOverrides;
+      packages.tablambda-benchmark-pypy = tablambdaBenchmarkPypy;
+      packages.tablambda-supplementary-material = tablambdaSupplementaryMaterial;
     };
 }
