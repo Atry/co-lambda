@@ -105,9 +105,55 @@
         fileset = coLambdaSources;
         entry = "submission";
       };
+
+      coLambdaSrc = lib.fileset.toSource {
+        root = ../papers/co-lambda;
+        fileset = coLambdaSources;
+      };
+
+      # The arxiv submission bundle: build preprint.pdf, then tar the exact set of
+      # source files latexmk recorded as inputs (from preprint.fls), dropping generated
+      # outputs and .bbl and adding the .bib files. A buildable artifact so the
+      # subproject owns its packaging logic.
+      coLambdaArxiv = pkgs.stdenv.mkDerivation {
+        name = "co-lambda-arxiv-submission.tar.gz";
+        src = coLambdaSrc;
+        nativeBuildInputs = [ paperTexlive pkgs.gnutar pkgs.gawk pkgs.gzip ];
+        SOURCE_DATE_EPOCH = "1";
+        buildPhase = ''
+          runHook preBuild
+          export HOME=$TMPDIR
+          export TEXMFVAR=$TMPDIR/texmf-var
+          latexmk -pdf -interaction=nonstopmode -halt-on-error preprint.tex
+          tar -czf "$TMPDIR/arxiv-submission.tar.gz" \
+            -C . \
+            $(gawk '
+              NR==1 && /^PWD /{pwd=$2 "/"; next}
+              /^OUTPUT /{gsub(/^OUTPUT \.\//, "OUTPUT "); outputs[$2]=1; next}
+              /^INPUT /{
+                sub(/^INPUT \.\//, "INPUT ");
+                path=$2;
+                if (path ~ /^\//) {
+                  if (index(path, pwd)==1) path=substr(path, length(pwd)+1);
+                  else next;
+                }
+                inputs[path]=1;
+              }
+              END{for (f in inputs) if (!(f in outputs) && f !~ /\.bbl$/) print f}
+            ' preprint.fls | sort -u) \
+            *.bib
+          runHook postBuild
+        '';
+        installPhase = ''
+          runHook preInstall
+          cp "$TMPDIR/arxiv-submission.tar.gz" $out
+          runHook postInstall
+        '';
+      };
     in {
       coLambdaTexlivePackages = texlivePackages;
       packages.co-lambda-appendix = coLambdaAppendixPdf;
       packages.co-lambda-submission = coLambdaSubmissionPdf;
+      packages.co-lambda-arxiv = coLambdaArxiv;
     };
 }
