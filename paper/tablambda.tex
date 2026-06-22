@@ -394,11 +394,16 @@ This section is about how to solve a $\lambda$-term's lazy denotational semantic
 % Recall 1（前人工作，需引用）：Levy-Longo 树，并就地把 weak-head reduction 定义
 % 为它的手段。为什么选这套语义而非别的（作者视角，不要讲给读者）：它是本文关心的
 % cyclic、memoized 程序在其下才有意义的 lazy 语义，对 case study 有用。
+% 【定义 Subst】算法 2（alg:whnfmap）头部 redex 那行调用 \Subst{b,a}，但全文只有
+%   line 43 的 \SetKwFunction 把它声明成伪代码关键字、从未定义其含义。故在此就地定义：
+%   redex Appsh(Lamsh(b),a) 收缩为 Subst(b,a)=把实参 a 代入抽象所绑变量的 capture-avoiding
+%   替换。正文沿用 caption 的 \textsf{Name} 约定（\textsf{Tabled}/\textsf{Resolve}/\textsf{WHNF}）
+%   写作 \textsf{Subst}，与算法里的 kw 宏渲染一致。
 \paragraph{\bilingual{The L\'evy--Longo tree}{Lévy--Longo 树}}
 \ifTablambdaChinese
-这套惰性语义就是该项的 Lévy--Longo 树~\cite{longo1983-set-theoretical-models, levy1978-reductions-lambda-calcul};我们回顾它,并随之回顾弱头归约。这里的项是 de Bruijn 形式的纯 $\lambda$-项:一个变量 $\Varsh_i$、一个抽象 $\Lamsh(t)$,或一个应用 $\Appsh(t, t')$,不含递归绑定子。\emph{弱头归约}收缩一个项的头部 redex,即沿其函数脊(function spine)最左的那个 redex,直到不再有为止;此时该项处于\emph{弱头范式}(weak-head normal form),即一个变量、一个抽象,或一个以变量为首的应用,除非始终到不了范式而归约永不停止。一个项的 \emph{Lévy--Longo 树}是它的遗传式(hereditary)弱头范式:暴露范式的顶层构造子,递归进入直接子项,并在到不了范式之处放上 $\bot$~\cite{barendregt1984-lambda-calculus, wadsworth1971-semantics-lambda-calculus, abramsky1993-full-abstraction-lazy-lambda}。
+这套惰性语义就是该项的 Lévy--Longo 树~\cite{longo1983-set-theoretical-models, levy1978-reductions-lambda-calcul};我们回顾它,并随之回顾弱头归约。这里的项是 de Bruijn 形式的纯 $\lambda$-项:一个变量 $\Varsh_i$、一个抽象 $\Lamsh(t)$,或一个应用 $\Appsh(t, t')$,不含递归绑定子。\emph{弱头归约}反复收缩一个项的头部 redex,即沿其函数脊(function spine)最左的那个 redex:一个 redex $\Appsh(\Lamsh(b), a)$ 收缩为 $\textsf{Subst}(b, a)$,即把实参 $a$ 代入该抽象所绑定的那个变量的避免捕获(capture-avoiding)替换。当不再有头部 redex 时,该项处于\emph{弱头范式}(weak-head normal form),即一个变量、一个抽象,或一个以变量为首的应用,除非始终到不了范式而归约永不停止。一个项的 \emph{Lévy--Longo 树}是它的遗传式(hereditary)弱头范式:暴露范式的顶层构造子,递归进入直接子项,并在到不了范式之处放上 $\bot$~\cite{barendregt1984-lambda-calculus, wadsworth1971-semantics-lambda-calculus, abramsky1993-full-abstraction-lazy-lambda}。
 \else
-This lazy semantics is the term's L\'evy--Longo tree~\cite{longo1983-set-theoretical-models, levy1978-reductions-lambda-calcul}; we recall it, and with it weak-head reduction. The terms are pure $\lambda$-terms in de Bruijn form, a variable $\Varsh_i$, an abstraction $\Lamsh(t)$, or an application $\Appsh(t, t')$, with no recursion binder. \emph{Weak-head reduction} contracts the head redex of a term, the leftmost redex along its function spine, until none remains; the term then stands in \emph{weak-head normal form}, a variable, an abstraction, or an application headed by a variable, unless no normal form is reached and reduction runs forever. The \emph{L\'evy--Longo tree} of a term is its hereditary weak-head normal form: expose the normal form's top constructor, recurse into the immediate sub-terms, and place $\bot$ where no normal form is reached \cite{barendregt1984-lambda-calculus, wadsworth1971-semantics-lambda-calculus, abramsky1993-full-abstraction-lazy-lambda}.
+This lazy semantics is the term's L\'evy--Longo tree~\cite{longo1983-set-theoretical-models, levy1978-reductions-lambda-calcul}; we recall it, and with it weak-head reduction. The terms are pure $\lambda$-terms in de Bruijn form, a variable $\Varsh_i$, an abstraction $\Lamsh(t)$, or an application $\Appsh(t, t')$, with no recursion binder. \emph{Weak-head reduction} repeatedly contracts the head redex of a term, the leftmost redex along its function spine: a redex $\Appsh(\Lamsh(b), a)$ contracts to $\textsf{Subst}(b, a)$, the capture-avoiding substitution of the argument $a$ for the variable the abstraction binds. When no head redex remains the term stands in \emph{weak-head normal form}, a variable, an abstraction, or an application headed by a variable, unless no normal form is reached and reduction runs forever. The \emph{L\'evy--Longo tree} of a term is its hereditary weak-head normal form: expose the normal form's top constructor, recurse into the immediate sub-terms, and place $\bot$ where no normal form is reached \cite{barendregt1984-lambda-calculus, wadsworth1971-semantics-lambda-calculus, abramsky1993-full-abstraction-lazy-lambda}.
 \fi
 
 % Recall 2（前人工作，需引用，与 recall 1 相互独立）：tabling，对方程 X -> M(FX)
@@ -805,11 +810,21 @@ Solving $\Omega$ (Algorithm~\ref{alg:whnf}) puts it on the stack and runs the we
 %   * 段【尾】把 compilation 点成一个【graph transformation 问题】（源图→编译图），用来衔接下一段 §4.3。
 %   注意：不要像早先那样把这两个衔接句都堆在结尾；首尾各放一个。也不要用悬空的 "such equation"
 %   （"equation" 在本段首次出现，无先行词）——已改为段首明确建立"图=折叠的余代数"。
+% 【fold/no-fold 例子（从 Conclusion、再从 §3.2 迁来）】本节是讲 Graph DSL，要点之一是【什么能折叠、什么不能】。
+%   这正是"编码决定哪些子问题重合"那句的具体见证：同一个零的流，r=Y(cons 0) 会折叠（两个状态反复出现），而
+%   Y F underline(0)（F 见 app:ceiling）写法的状态 Y F underline(k) 两两结构相异、不折叠——即"编码而非指称决定折叠"。
+%   作者要求【非常精简】且【正文只下 claim、解释进脚注】：正文只留断言"什么折叠取决于编码而非指称"，
+%   r/Y F underline(0) 的具体例子连同 F 的定义一并放进脚注，以免打断读者思路；完整陈述仍在附录 thm:ceiling
+%   （sec:tabling）。这句挂在 point ①（结构/编码是杠杆）之下，不是新支线；早先放在 §3.2 的整段 \paragraph 已删。
+% 【能动性，作者明确】重点在于"编码是程序员能决定的"：换一种写法就有不同折叠效果。故把原被动句
+%   "How an algorithm is encoded" 改为主动 "How a programmer encodes an algorithm"（全文首次、也是唯一用
+%   "programmer"，因本节正是把 λ 当 DSL，使用者即程序员），并让例子里 "written as Y F 0 / 写成 Y F 0" 突出
+%   "写法"这一动作。r vs Y F 0 正是"同一指称、两种写法、两种效果"的见证。
 \subsection{\bilingual{The \texorpdfstring{$\lambda$}{lambda}-Calculus as a DSL for Graphs}{把 \texorpdfstring{$\lambda$}{lambda}-演算用作图的 DSL}}\label{sec:graphs}
 \ifTablambdaChinese
-解释器把一个项的展开折叠到它重复的状态上,于是一棵无限树成为一张有限图,而项的结构\emph{就是}那张图。因此,一个算法如何被编码,就决定了哪些子问题会重合,并随之决定图的大小以及它所耗的时间与空间。在整个有理片段上,即有限状态、正则、以及有限格上不动点的那些计算中,每个领域平时为管理一张图而手写的簿记,正是在状态同一性上做 tabling 所免费给出的同一样东西:动态规划的记忆表、博弈搜索的置换表、图可达性与指向分析的已访问集合,以及合一(unification)与递归类型的环检测相等,都是同一个机制,即对重复状态的识别;附录~\ref{app:dsl} 把每一个都做成解释器所运行的一个纯项。项的结构是这一成本上的一个杠杆,而它据以制表的相等性是另一个。于是,编译就是一种图变换,把源图映射到一张编译后的图,同一个解释器把它求解成一个到 Python 的自举编译器;它据以制表的相等性,以及由此打开的相等性与归约的设计空间,我们在第~\ref{sec:design-space} 节展开。
+解释器把一个项的展开折叠到它重复的状态上,于是一棵无限树成为一张有限图,而项的结构\emph{就是}那张图。因此,程序员如何编码一个算法,就决定了哪些子问题会重合,并随之决定图的大小以及它所耗的时间与空间;什么会折叠,取决于编码,而非指称。\footnote{零的环状流写成 $r = Y\,(\mathtt{cons}\,0)$ 时会折叠,其状态反复出现;但写成 $Y\,F\,\underline{0}$(其中 $F = \lambda s.\lambda n.\,\mathtt{cons}\,0\,(s\,(\mathtt{succ}\,n))$)时却不会:它的状态 $Y\,F\,\underline{0}, Y\,F\,\underline{1}, \dots$ 在结构上两两相异,尽管它们指称同一条流(附录~\ref{sec:tabling})。}在整个有理片段上,即有限状态、正则、以及有限格上不动点的那些计算中,每个领域平时为管理一张图而手写的簿记,正是在状态同一性上做 tabling 所免费给出的同一样东西:动态规划的记忆表、博弈搜索的置换表、图可达性与指向分析的已访问集合,以及合一(unification)与递归类型的环检测相等,都是同一个机制,即对重复状态的识别;附录~\ref{app:dsl} 把每一个都做成解释器所运行的一个纯项。项的结构是这一成本上的一个杠杆,而它据以制表的相等性是另一个。于是,编译就是一种图变换,把源图映射到一张编译后的图,同一个解释器把它求解成一个到 Python 的自举编译器;它据以制表的相等性,以及由此打开的相等性与归约的设计空间,我们在第~\ref{sec:design-space} 节展开。
 \else
-The interpreter folds a term's unfolding onto its repeated states, so an infinite tree becomes a finite graph and the term's structure \emph{is} that graph. How an algorithm is encoded therefore fixes which subproblems coincide, and with them the size of the graph and the time and space it costs. Across the rational fragment, the finite-state, regular, and finite-lattice-fixpoint computations, the bookkeeping each domain ordinarily writes by hand to manage a graph is exactly what tabling on state identity supplies for free: the memo table of dynamic programming, the transposition table of game search, the visited set of graph reachability and points-to analysis, and the cycle-detecting equality of unification and recursive types are one mechanism, the recognition of a repeated state, and Appendix~\ref{app:dsl} works each as a pure term the interpreter runs. The structure of the term is one lever on this cost, and the equality it tables by is another. Compilation is then a graph transformation, mapping the source graph to a compiled one that the same interpreter solves into a bootstrap compiler to Python; the equality it tables by, and the design space of equalities and reductions it opens, we take up in Section~\ref{sec:design-space}.
+The interpreter folds a term's unfolding onto its repeated states, so an infinite tree becomes a finite graph and the term's structure \emph{is} that graph. How a programmer encodes an algorithm therefore fixes which subproblems coincide, and with them the size of the graph and the time and space it costs; what folds depends on the encoding, not the denotation.\footnote{The cyclic stream of zeros folds when written as $r = Y\,(\mathtt{cons}\,0)$, whose states recur, but not as $Y\,F\,\underline{0}$ with $F = \lambda s.\lambda n.\,\mathtt{cons}\,0\,(s\,(\mathtt{succ}\,n))$: its states $Y\,F\,\underline{0}, Y\,F\,\underline{1}, \dots$ are all structurally distinct, though they denote the same stream (Appendix~\ref{sec:tabling}).} Across the rational fragment, the finite-state, regular, and finite-lattice-fixpoint computations, the bookkeeping each domain ordinarily writes by hand to manage a graph is exactly what tabling on state identity supplies for free: the memo table of dynamic programming, the transposition table of game search, the visited set of graph reachability and points-to analysis, and the cycle-detecting equality of unification and recursive types are one mechanism, the recognition of a repeated state, and Appendix~\ref{app:dsl} works each as a pure term the interpreter runs. The structure of the term is one lever on this cost, and the equality it tables by is another. Compilation is then a graph transformation, mapping the source graph to a compiled one that the same interpreter solves into a bootstrap compiler to Python; the equality it tables by, and the design space of equalities and reductions it opens, we take up in Section~\ref{sec:design-space}.
 \fi
 
 % =====================================================================
@@ -893,18 +908,34 @@ Graph reduction~\cite{wadsworth1971-semantics-lambda-calculus} evaluates terms o
 % =====================================================================
 \section{\bilingual{Conclusion}{结论}}\label{sec:conclusion}
 % =====================================================================
+% 【去重，作者明确】结论原为三段，几乎句句复述别处，已压成两段：
+%   * 三种情形的 recap（map→环、ed 的 O(mn)、判 ⊥）→ 引言 235-239 + §3 已讲透，删。
+%   * "标准做法付两次代价"→ 引言 line 239 原句，删（新版只用一个 "where the standard account
+%     would reach outside the calculus …" 从句带过，作为 price-of-purity 的对照）。
+%   * "项读不回 letrec"→ 相关工作 "Sharing as an added construct"（line ~896-898）+ 附录 B
+%     的 read-back 限制已讲，正文只留一句。
+%   * 第 1/3 段都把 "可判定识别算有理不动点/判 ⊥/折环" 列了一遍（自相重复），合并为一句。
+%   唯一【只在结论出现】的综合点是 "纯性的代价从两侧读"（tabling 能折叠的 = 项无法观察的，同一事实），
+%   予以保留；外加一句 "同一机制既解释又编译"。各点指向证明所在附录（sec:tabling / app:compiler），不复述。
+% 【结尾上价值，作者定】加第三段收尾，把全文拔到 declarative-vs-imperative 的立意：λ-项的操作式读法=祈使
+%   （一步步命令归约），tabling 让它转为声明（只声明图怎么建、怎么转换），引用透明（值相等者自由替换，回扣
+%   引言对 referential transparency 的定义）是其根基；落到口号 "declared, not imperated"（声明/祈使）。动词用
+%   \emph{imperate}（古旧但真实存在的词，imperative 的词源动词）以与 \emph{declare} 严格对仗，并对应中文“祈使”；
+%   reviewer 若不接受可回退 command/commanded。按 skill：作者原话是问句“计算本身能不能被声明”，已转成陈述
+%   （正文不写反问句）；用 "the ideal we hold / 所怀的理想" 表显式作者价值取向、不过度声称；不声称能折叠全部
+%   有理图（thm:ceiling 的 ceiling 已在第一段以 "stops short of the full rational fragment" 交代）。
 \ifTablambdaChinese
-一个 $\lambda$-项的每个子项都是一个状态,而一步归约要么暴露一层数据,要么静默地继续到一个后继状态。项的含义是归约所展开成的那棵树,而 tabling 计算出这棵树。环状数据、自动记忆化,以及把非生产性循环判定为 $\bot$,正是 tabling 的样子:一个普通的 $\mathtt{map}$ 作用于零的环状流,折叠成由一构成的有限的环,而一个朴素的编辑距离递推以 $O(mn)$ 运行,且未向演算添加任何东西。
+一个 $\lambda$-项的每个子项都是一个状态,而对其弱头归约做 tabling,便把该项的含义算成一张有限的、可能含环的图;而标准做法则要伸到演算之外,取一个递归构造来造环、一处非纯来遍历它。这正是从两侧读到的纯性的代价:tabling 凭一种项自身未必能做出的识别来折叠环,因此这识别必须可判定、只能停在结构同一性,达不到完整的有理片段(附录~\ref{sec:tabling});而项这一侧被扣住不给,因此一个项无法把它自己的共享读回成一个 $\mathtt{letrec}$。
 
-标准做法要付两次代价:一个附加的递归构造来造出环,以及一处非纯来遍历它;而这套做法两者都不付,因为折叠环的那个识别是 tabling 的,而非项所执行的操作。这一个决定划定了该构造的两条边界。在 tabling 一侧,识别必须可判定,因此它是一阶项的结构同一性,这达不到行为等价、因而也达不到完整的有理片段:一个其状态两两相异的有理解并不会折叠(附录~\ref{sec:tabling} 给出一个具体例子:一个零的流,其生成状态 $Y\,F\,\underline{0}, Y\,F\,\underline{1}, \dots$ 在结构上各不相同,却全都展开为同一棵有理树)。在项一侧,识别被扣住不给,因此一个项在它所产生的图中观察不到任何共享:它构造并遍历一张有限的环图,却无法把它读回成一个带显式共享的表示,比如一个 $\mathtt{letrec}$。tabling 可以执行的折叠,与项无法观察到的共享,是同一个事实,即从两侧读到的纯性的代价。
+解释一个项的那同一个 tabling 也编译它,而编译器本身就是它所求解的一个项(附录~\ref{app:compiler}):同一个对再次出现状态的可判定识别,在有限多状态可达之处计算有理不动点,把发散判定为 $\bot$,并把环折叠成一张有限图。
 
-解释一个项的那同一个 tabling 也编译它,把每个子项送到一棵 Python 语法树的一个节点(第~\ref{sec:bridge} 节),而编译器本身就是解释器所求解的一个项。自始至终都是同一个机制在工作:tabling 对再次出现的状态的可判定识别,它在有限多状态可达之处计算有理不动点,把发散判定为 $\bot$,并把环折叠成一张有限图。
+若作操作式的读法,一个 $\lambda$-项\emph{祈使}一场计算,一次归约接着一次;而 tabling 让它转而去\emph{声明}一场计算,只声明要构建什么样的图、如何转换它,其中值相等者可以自由替换,而对一个已经见过的状态的识别则落在求解器身上。这正是我们对 $\lambda$-演算所怀的理想:一种用来\emph{声明}计算、而非用来\emph{祈使}计算的语言。
 \else
-Each sub-term of a $\lambda$-term is a state, and one step of reduction either exposes a layer of data or continues silently at a successor state. The meaning of the term is the tree that reduction unfolds to, and tabling computes that tree. Cyclic data, automatic memoization, and the decision of an unproductive loop as $\bot$ are what tabling looks like: an ordinary $\mathtt{map}$ over the cyclic stream of zeros folds to the finite circle of ones, and a naive edit-distance recurrence runs in $O(mn)$, with nothing added to the calculus.
+Each sub-term of a $\lambda$-term is a state, and tabling its weak-head reduction computes the term's meaning as a finite, possibly cyclic graph, where the standard account would reach outside the calculus for a recursion construct to build the cycle and an impurity to traverse it. This is the price of purity, read from two sides: tabling folds a cycle by a recognition the term may not perform, so the recognition must be decidable and stays structural identity, short of the full rational fragment (Appendix~\ref{sec:tabling}), while the term, denied it, cannot read its own sharing back out as a $\mathtt{letrec}$.
 
-The standard account pays twice, an added recursion construct to create a cycle and an impurity to traverse it; this one pays neither, because the recognition that folds a cycle is tabling's, not an operation a term performs. That single decision draws both boundaries of the construction. On tabling's side the recognition must be decidable, so it is structural identity of first-order terms, which falls short of behavioral equivalence and so of the full rational fragment: a rational solution whose states are nonetheless pairwise distinct does not fold (Appendix~\ref{sec:tabling} gives a concrete example: a stream of zeros whose generating states $Y\,F\,\underline{0}, Y\,F\,\underline{1}, \dots$ are all structurally distinct yet all unfold to the same rational tree). On the term's side the recognition is withheld, so a term observes no sharing in the graph it produces: it builds and traverses a finite cyclic graph yet cannot read it back into a representation with explicit sharing such as a $\mathtt{letrec}$. The folding tabling may perform and the sharing the term may not observe are one fact, the price of purity read from two sides.
+The same tabling that interprets a term also compiles it, the compiler being itself a term it solves (Appendix~\ref{app:compiler}): one decidable recognition of a recurring state computes the rational fixpoint wherever finitely many states are reachable, decides divergence as $\bot$, and folds a cycle into a finite graph.
 
-The same tabling that interprets a term also compiles it, sending each sub-term to a node of a Python syntax tree (Section~\ref{sec:bridge}), and the compiler is itself a term the interpreter solves. One mechanism does the work throughout: tabling's decidable recognition of a recurring state, which computes the rational fixpoint wherever finitely many states are reachable, decides divergence as $\bot$, and folds a cycle into a finite graph.
+Read operationally, a $\lambda$-term \emph{imperates} a computation, one reduction after another; tabling lets it \emph{declare} one instead, only what graph is built and how it is transformed, with equal values freely substitutable, while the recognition of a state already seen falls to the solver. This is the ideal we hold for the $\lambda$-calculus, a language in which a computation is \emph{declared}, not \emph{imperated}.
 \fi
 
 \fi % end \ifTablambdaBody (the main matter, Sections 1-6)
@@ -1130,19 +1161,28 @@ For instance, one step of weak-head reduction in the pure $\lambda$-calculus is 
 %   (sec:design-space) 高层总结本附录（审稿人不读附录，故 §4.3 正文已带关键事实：更粗相等⇒更高命中率，CPython 3.11 上自举约 5x）。
 %   tab:defun 由 generated/defun-benchmark-py311 渲染（完整 benchmark 含 bootstrap，仅 CPython 3.11 与 PyPy 能跑，各
 %   一份 defun-benchmark-<tag>.tex，正文取 CPython 3.11 那份）、编译输出由 generated/compiler-examples 渲染（均生成、非手写）。
-\section{\bilingual{The Compiler}{编译器}}\label{app:compiler}
+% 【特指我们的 bootstrap 编译器，且别说"第二个"】原开头"The compiler is a second tabled reduction"有两处毛病：
+%   (1)"second"无所指——前面从未立"第一个 tabled 归约"，且本文主旨是【一个机制贯穿始终】（见 Conclusion
+%   "One mechanism does the work throughout"），说"第二个"反而自相矛盾。(2) 泛称"the compiler"，应特指【我们的】
+%   bootstrap 编译器（§5.1/sec:graphs 已称它为 "a bootstrap compiler to Python"）。改为：我们的自举编译器本身是
+%   一个 λ-项，解释器用【同一套】tabled 归约求解它。section 标题由"The Compiler"改为"The Bootstrap Compiler"以特指
+%   那个能自编译的具体产物（"Our/我们的"留在正文开头的 first-person 表述里，不进标题）。
+% 【运行时三件套，勿漏 Closure ABC】_defun_runtime.py 顶部 docstring 明言生成代码引用三个自由名：
+%   Closure、Thunk、interned（Closure 是 ABC，class Closure(Node, ABC)，每个发出的闭包类都继承它）。原句只列
+%   "Thunk 载体 + 内化算子"，漏了 Closure 抽象基类，已补。
+\section{\bilingual{The Bootstrap Compiler}{自举编译器}}\label{app:compiler}
 % =====================================================================
 \ifTablambdaChinese
-编译器是第二个 tabled 归约。它把一个被引用(quoted)的源程序的每个子项,送到一棵 Python 抽象语法树中覆于该子项自身子项之上的一个节点,而它的解就是编译后的程序;编译器本身是一个纯 $\lambda$-项,解释器在被引用的源(即表示为 Scott 编码数据的源程序)上求解它,于是程序分析被表达为求值。编译策略是去函数化(defunctionalization),即把每个高阶值替换为一个具名的一阶数据构造子,并一致地应用于每个源子项:一个应用编译为一个 \texttt{Thunk},即一个携带其被调者与参数的挂起 redex;一个抽象编译为一个内化的 dataclass,其字段是它所捕获的自由变量,其 call 方法在一个参数上运行时,通过对编译后的函数体求值来执行 $\beta$-归约;一个变量编译为相应的参数或捕获字段。
+我们的自举编译器本身就是一个纯 $\lambda$-项,解释器用解释项时所用的那同一套 tabled 归约在被引用(quoted)的源上求解它,于是程序分析被表达为求值。它把被引用的源程序(即表示为 Scott 编码数据的源程序)的每个子项,送到一棵 Python 抽象语法树中覆于该子项自身子项之上的一个节点,而它的解就是编译后的程序。编译策略是去函数化(defunctionalization),即把每个高阶值替换为一个具名的一阶数据构造子,并一致地应用于每个源子项:一个应用编译为一个 \texttt{Thunk},即一个携带其被调者与参数的挂起 redex;一个抽象编译为一个内化的 dataclass,其字段是它所捕获的自由变量,其 call 方法在一个参数上运行时,通过对编译后的函数体求值来执行 $\beta$-归约;一个变量编译为相应的参数或捕获字段。
 \else
-The compiler is a second tabled reduction. It sends each sub-term of a quoted source program to a node of a Python abstract syntax tree over that sub-term's own sub-terms, and its solution is the compiled program; the compiler is itself a pure $\lambda$-term, which the interpreter solves on the quoted source, the source program represented as a Scott-encoded datum, so program analysis is expressed as evaluation. The compilation strategy is defunctionalization, the replacement of each higher-order value by a named first-order data constructor, applied uniformly to every source sub-term: an application compiles to a \texttt{Thunk}, a suspended redex carrying its callee and argument; an abstraction compiles to an interned dataclass whose fields are the free variables it captures and whose call method, run on an argument, performs the $\beta$-reduction by evaluating the compiled body; a variable compiles to the corresponding argument or capture field.
+Our bootstrap compiler is itself a pure $\lambda$-term, which the interpreter solves on the quoted source by the same tabled reduction it runs to interpret a term, so program analysis is expressed as evaluation. It sends each sub-term of the quoted source program, represented as a Scott-encoded datum, to a node of a Python abstract syntax tree over that sub-term's own sub-terms, and its solution is the compiled program. The compilation strategy is defunctionalization, the replacement of each higher-order value by a named first-order data constructor, applied uniformly to every source sub-term: an application compiles to a \texttt{Thunk}, a suspended redex carrying its callee and argument; an abstraction compiles to an interned dataclass whose fields are the free variables it captures and whose call method, run on an argument, performs the $\beta$-reduction by evaluating the compiled body; a variable compiles to the corresponding argument or capture field.
 \fi
 
 \paragraph{\bilingual{The runtime and content-addressed closures}{运行时与内容寻址的闭包}}
 \ifTablambdaChinese
-运行时是极小的:一个 \texttt{Thunk} 载体和一个内化算子。一个 \texttt{Thunk} 的弱头范式由解释器用于静默归约的那同一个记忆化最小不动点机制计算,因此 \texttt{Thunk} 内化镜像了项内化:一个再次出现的 redex 是同一个内化 \texttt{Thunk},只归约一次,而编译后的程序继承了解释器的环图折叠及其把非生产性循环判定为 $\bot$ 的能力。闭包类是内容可寻址的:每个类以其编译后函数体的散列值命名,其捕获字段按位置而非按绑定深度编号,因此两个函数体形状相同、但在不同深度捕获变量的源抽象,编译为同一个类。这就是第~\ref{sec:design-space} 节那个更粗、却仍可判定的同一性:它折叠解释器逐节点内化所分开的状态。
+运行时是极小的:一个 \texttt{Closure} 抽象基类、一个 \texttt{Thunk} 载体,以及一个内化算子;编译器发出的每个闭包类都是 \texttt{Closure} 的子类。一个 \texttt{Thunk} 的弱头范式由解释器用于静默归约的那同一个记忆化最小不动点机制计算,因此 \texttt{Thunk} 内化镜像了项内化:一个再次出现的 redex 是同一个内化 \texttt{Thunk},只归约一次,而编译后的程序继承了解释器的环图折叠及其把非生产性循环判定为 $\bot$ 的能力。闭包类是内容可寻址的:每个类以其编译后函数体的散列值命名,其捕获字段按位置而非按绑定深度编号,因此两个函数体形状相同、但在不同深度捕获变量的源抽象,编译为同一个类。这就是第~\ref{sec:design-space} 节那个更粗、却仍可判定的同一性:它折叠解释器逐节点内化所分开的状态。
 \else
-The runtime is minimal: a \texttt{Thunk} carrier and an interning operator. The weak-head normal form of a \texttt{Thunk} is computed by the same memoized least-fixpoint mechanism the interpreter uses for silent reduction, so \texttt{Thunk} interning mirrors term interning: a recurring redex is one interned \texttt{Thunk}, reduced once, and the compiled program inherits the interpreter's cyclic-graph folding and its decision of non-productive loops as $\bot$. Closure classes are content-addressable: each class is named by a hash of its compiled body, with its capture fields numbered by position rather than by binding depth, so two source abstractions whose bodies have the same shape but capture variables at different depths compile to one class. This is the coarser, still decidable, identity of Section~\ref{sec:design-space}: it folds states the interpreter's per-node interning keeps apart.
+The runtime is minimal: a \texttt{Closure} abstract base class, a \texttt{Thunk} carrier, and an interning operator, every closure class the compiler emits being a subclass of \texttt{Closure}. The weak-head normal form of a \texttt{Thunk} is computed by the same memoized least-fixpoint mechanism the interpreter uses for silent reduction, so \texttt{Thunk} interning mirrors term interning: a recurring redex is one interned \texttt{Thunk}, reduced once, and the compiled program inherits the interpreter's cyclic-graph folding and its decision of non-productive loops as $\bot$. Closure classes are content-addressable: each class is named by a hash of its compiled body, with its capture fields numbered by position rather than by binding depth, so two source abstractions whose bodies have the same shape but capture variables at different depths compile to one class. This is the coarser, still decidable, identity of Section~\ref{sec:design-space}: it folds states the interpreter's per-node interning keeps apart.
 \fi
 
 % 本段的具体倍数取自 generated/defun-benchmark-py311.tex（CPython 3.11），与表 tab:defun 同源；用
