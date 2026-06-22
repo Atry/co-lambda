@@ -1,19 +1,3 @@
-% =====================================================================
-%  Solving Coalgebraic Equations in the Pure $\lambda$-Calculus
-% ---------------------------------------------------------------------
-%  Shared body. This file carries NO \documentclass: it is \input by two
-%  entry points that supply the class (mimicking ../inheritance-calculus):
-%    * preprint.tex   -- arXiv / preprint  (acmart, nonacm)
-%    * submission.tex -- POPL submission   (acmart, review, anonymous)
-%  Build both with: latexmk  (see latexmkrc)
-% ---------------------------------------------------------------------
-%  STATUS: working draft.
-%  * Placeholders are marked \TODO{...} and render in red.
-%  * Every bibliography entry is UNVERIFIED: author/title are best-effort
-%    recollections; years, venues, volumes, and pages are marked [verify].
-%    Do not cite from this file without checking each entry.
-% =====================================================================
-
 %% acmart already loads amsmath, amssymb, amsthm, xcolor, and hyperref;
 %% only mathtools needs to be added here.
 \usepackage{mathtools}
@@ -842,7 +826,7 @@ The interpreter folds a term's unfolding onto its repeated states, so an infinit
 %      编译器都是谱系上的点、【都不是最优】（最优=behavioral、不可判定）；正文务必不暗示二者 optimal。
 %      【本节最重要的点】编译器编码更粗 ⇒ 折叠命中率更高（把解释器分开的 state 也折成一个），benchmark 正好证明
 %      （tab:defun 的 tabled-objects 列：编译形式少 ~5x 个对象），且【每个输入返回同一张图】（同解）；故在 CPython
-%      3.11 上 ~5x 更快、~3x 更省内存（时间/内存随解释器变：PyPy 自举约 1.0x；tabled 倍数是确定的）。
+%      3.11 上 ~5x 更快、~3x 更省内存（时间/内存是单次快照；tabled 倍数是确定的）。
 %   ② 归约旋钮：structure map 由 reduction function 呈现（sec:reductions）；换 reduction ⇒ 另一种 tree semantics。
 %      框架【能】处理别的 reduction（含 Böhm），我们只是【选择不在此展开 Böhm】；正文只泛说"换 reduction 固定另一种
 %      lazy tree semantics"，【不写成 limitation】。
@@ -1159,8 +1143,7 @@ For instance, one step of weak-head reduction in the pure $\lambda$-calculus is 
 % App（编译器）：从原 parked Implementation/Evaluation 提炼——编译器机制(defunctionalization) + content-addressed
 %   closures（更粗但可判定的相等）+ 自举 benchmark(tab:defun) + read-back 局限 + 编译输出例子。§4.3
 %   (sec:design-space) 高层总结本附录（审稿人不读附录，故 §4.3 正文已带关键事实：更粗相等⇒更高命中率，CPython 3.11 上自举约 5x）。
-%   tab:defun 由 generated/defun-benchmark-py311 渲染（完整 benchmark 含 bootstrap，仅 CPython 3.11 与 PyPy 能跑，各
-%   一份 defun-benchmark-<tag>.tex，正文取 CPython 3.11 那份）、编译输出由 generated/compiler-examples 渲染（均生成、非手写）。
+%   tab:defun 由 generated/defun-benchmark-py311 渲染（完整 benchmark 含 bootstrap）、编译输出由 generated/compiler-examples 渲染（均生成、非手写）。
 % 【特指我们的 bootstrap 编译器，且别说"第二个"】原开头"The compiler is a second tabled reduction"有两处毛病：
 %   (1)"second"无所指——前面从未立"第一个 tabled 归约"，且本文主旨是【一个机制贯穿始终】（见 Conclusion
 %   "One mechanism does the work throughout"），说"第二个"反而自相矛盾。(2) 泛称"the compiler"，应特指【我们的】
@@ -1173,9 +1156,9 @@ For instance, one step of weak-head reduction in the pure $\lambda$-calculus is 
 \section{\bilingual{The Bootstrap Compiler}{自举编译器}}\label{app:compiler}
 % =====================================================================
 \ifTablambdaChinese
-我们的自举编译器本身就是一个纯 $\lambda$-项,解释器用解释项时所用的那同一套 tabled 归约在被引用(quoted)的源上求解它,于是程序分析被表达为求值。它把被引用的源程序(即表示为 Scott 编码数据的源程序)的每个子项,送到一棵 Python 抽象语法树中覆于该子项自身子项之上的一个节点,而它的解就是编译后的程序。编译策略是去函数化(defunctionalization),即把每个高阶值替换为一个具名的一阶数据构造子,并一致地应用于每个源子项:一个应用编译为一个 \texttt{Thunk},即一个携带其被调者与参数的挂起 redex;一个抽象编译为一个内化的 dataclass,其字段是它所捕获的自由变量,其 call 方法在一个参数上运行时,通过对编译后的函数体求值来执行 $\beta$-归约;一个变量编译为相应的参数或捕获字段。
+我们的自举编译器本身就是一个纯 $\lambda$-项,解释器用解释项时所用的那同一套 tabled 归约在被引用(quoted)的源上求解它,于是程序分析被表达为求值。它把被引用的源程序(即表示为 Scott 编码数据的源程序)的每个子项,送到一棵 Python 抽象语法树中覆于该子项自身子项之上的一个节点,而它的解就是编译后的程序。编译策略是去函数化(defunctionalization)~\cite{reynolds1972-definitional-interpreters-defunctionalization},即把每个高阶值替换为一个具名的一阶数据构造子,并一致地应用于每个源子项:一个应用编译为一个 \texttt{Thunk},即一个携带其被调者与参数的挂起 redex;一个抽象编译为一个内化的 dataclass,其字段是它所捕获的自由变量,其 call 方法在一个参数上运行时,通过对编译后的函数体求值来执行 $\beta$-归约;一个变量编译为相应的参数或捕获字段。
 \else
-Our bootstrap compiler is itself a pure $\lambda$-term, which the interpreter solves on the quoted source by the same tabled reduction it runs to interpret a term, so program analysis is expressed as evaluation. It sends each sub-term of the quoted source program, represented as a Scott-encoded datum, to a node of a Python abstract syntax tree over that sub-term's own sub-terms, and its solution is the compiled program. The compilation strategy is defunctionalization, the replacement of each higher-order value by a named first-order data constructor, applied uniformly to every source sub-term: an application compiles to a \texttt{Thunk}, a suspended redex carrying its callee and argument; an abstraction compiles to an interned dataclass whose fields are the free variables it captures and whose call method, run on an argument, performs the $\beta$-reduction by evaluating the compiled body; a variable compiles to the corresponding argument or capture field.
+Our bootstrap compiler is itself a pure $\lambda$-term, which the interpreter solves on the quoted source by the same tabled reduction it runs to interpret a term, so program analysis is expressed as evaluation. It sends each sub-term of the quoted source program, represented as a Scott-encoded datum, to a node of a Python abstract syntax tree over that sub-term's own sub-terms, and its solution is the compiled program. The compilation strategy is defunctionalization~\cite{reynolds1972-definitional-interpreters-defunctionalization}, the replacement of each higher-order value by a named first-order data constructor, applied uniformly to every source sub-term: an application compiles to a \texttt{Thunk}, a suspended redex carrying its callee and argument; an abstraction compiles to an interned dataclass whose fields are the free variables it captures and whose call method, run on an argument, performs the $\beta$-reduction by evaluating the compiled body; a variable compiles to the corresponding argument or capture field.
 \fi
 
 \paragraph{\bilingual{The runtime and content-addressed closures}{运行时与内容寻址的闭包}}
@@ -1187,13 +1170,12 @@ The runtime is minimal: a \texttt{Closure} abstract base class, a \texttt{Thunk}
 
 % 本段的具体倍数取自 generated/defun-benchmark-py311.tex（CPython 3.11），与表 tab:defun 同源；用
 %   nix run .#regen-defun-benchmark-py311 重生成后，这里的"两倍半到近八倍/约五倍/约低三倍"要一并核对更新。
-%   时间与内存是单次快照，随运行和解释器而变，故只给约数；制表(tabled)倍数是确定的，故下一段可给稳定区间。
-%   PyPy 上自举加速比约为 1.0x（其 tracing JIT 把解释器也提速），这正是正文要提解释器版本、并对比 PyPy 的依据。
+%   时间与内存是单次快照，随运行而变，故只给约数；制表(tabled)倍数是确定的，故下一段可给稳定区间。
 \paragraph{\bilingual{The self-compilation bootstrap}{自编译自举}}
 \ifTablambdaChinese
-编译器的第一个基准是把这套构造应用于它自身。编译器是一个纯 $\lambda$-项;解释器用同一套 tabling 在它自己被引用的源上求解它;输出是一个 Python 程序。一个纯 $\lambda$-项把一张图(源项)变换成另一张图(编译后的抽象语法树),既不借助附加的递归构造、也不观察指针同一性,这正是图变换栖身于演算之内的证据。表~\ref{tab:defun} 连同若干更轻的项一并报告这次自举,每一项都在 CPython 3.11 上以解释执行对照编译执行。编译形式在轻量项上大约快两倍半到近八倍,在自举上约快五倍,且自举的峰值内存约低三倍。这些时间与内存数字是单个解释器的一次快照、会随解释器而变,而制表对象的计数是确定的:在 PyPy 上,其追踪式即时编译器(tracing just-in-time compiler)会加速解释器本身,编译形式在自举上并不比解释执行更快,却仍然物化出同样少五倍的制表对象。
+编译器的第一个基准是把这套构造应用于它自身。编译器是一个纯 $\lambda$-项;解释器用同一套 tabling 在它自己被引用的源上求解它;输出是一个 Python 程序。一个纯 $\lambda$-项把一张图(源项)变换成另一张图(编译后的抽象语法树),既不借助附加的递归构造、也不观察指针同一性,这正是图变换栖身于演算之内的证据。表~\ref{tab:defun} 连同若干更轻的项一并报告这次自举,每一项都在 CPython 3.11 上以解释执行对照编译执行。编译形式在轻量项上大约快两倍半到近八倍,在自举上约快五倍,且自举的峰值内存约低三倍。这些时间与内存数字是单个解释器的一次快照、会随解释器而变,而制表对象的计数是确定的:编译形式在自举上物化出同样少五倍的制表对象。
 \else
-The compiler's first benchmark is the construction applied to itself. The compiler is a pure $\lambda$-term; the interpreter solves it on its own quoted source by the same tabling; the output is a Python program. That a pure $\lambda$-term transforms one graph, the source term, into another, the compiled abstract syntax tree, without an added recursion construct and without observing pointer identity, is the evidence that graph transformation lives inside the calculus. Table~\ref{tab:defun} reports this bootstrap together with lighter terms, each run interpreted against compiled on CPython 3.11. The compiled form is roughly two and a half to nearly eight times faster on the light terms and about five times faster on the bootstrap, with lower peak memory on the bootstrap by a factor of about three. These time and memory figures are a snapshot of a single interpreter and shift across interpreters, whereas the tabled-object counts are deterministic: on PyPy, whose tracing just-in-time compiler speeds the interpreter itself, the compiled form runs no faster than the interpreter on the bootstrap, yet it still materializes the same five times fewer tabled objects.
+The compiler's first benchmark is the construction applied to itself. The compiler is a pure $\lambda$-term; the interpreter solves it on its own quoted source by the same tabling; the output is a Python program. That a pure $\lambda$-term transforms one graph, the source term, into another, the compiled abstract syntax tree, without an added recursion construct and without observing pointer identity, is the evidence that graph transformation lives inside the calculus. Table~\ref{tab:defun} reports this bootstrap together with lighter terms, each run interpreted against compiled on CPython 3.11. The compiled form is roughly two and a half to nearly eight times faster on the light terms and about five times faster on the bootstrap, with lower peak memory on the bootstrap by a factor of about three. These time and memory figures are a snapshot of a single interpreter and shift across interpreters, whereas the tabled-object counts are deterministic: the compiled form materializes five times fewer tabled objects on the bootstrap.
 \fi
 
 \begin{table*}
@@ -1300,9 +1282,9 @@ so $\mathtt{reach}(d)$ and $\mathtt{pt}(c,o_1)$ hold while $\mathtt{reach}(e)$ a
 
 \paragraph{\bilingual{Unification and recursive types}{合一与递归类型}}
 \ifTablambdaChinese
-两张解图所展开成的行为之间的相等,由环检测互模拟(bisimulation)判定~\cite{courcelle1983-infinite-trees},它是有理树合一~\cite{colmerauer1984-trees} 与等递归($\mu$-)类型相等~\cite{amadio1993-subtyping-recursive-types, brandt1998-coinductive-type-equality} 的可判定核心:$Y\,(\mathtt{cons}\;0)$ 与 $Y\,(\lambda s.\,\mathtt{cons}\;0\;s)$ 读出来完全相同,而 $Y\,(\mathtt{cons}\;1)$ 则不同。
+两张解图所展开成的行为之间的相等,由环检测~\cite{courcelle1983-infinite-trees}互模拟(bisimulation)判定,它是有理树合一~\cite{colmerauer1984-trees} 与等递归($\mu$-)类型相等~\cite{amadio1993-subtyping-recursive-types, brandt1998-coinductive-type-equality} 的可判定核心:$Y\,(\mathtt{cons}\;0)$ 与 $Y\,(\lambda s.\,\mathtt{cons}\;0\;s)$ 读出来完全相同,而 $Y\,(\mathtt{cons}\;1)$ 则不同。
 \else
-Equality of the behaviors two solution graphs unfold to is decided by cycle-detecting bisimulation~\cite{courcelle1983-infinite-trees}, the decidable core of rational-tree unification \cite{colmerauer1984-trees} and equirecursive ($\mu$-) type equality \cite{amadio1993-subtyping-recursive-types, brandt1998-coinductive-type-equality}: $Y\,(\mathtt{cons}\;0)$ and $Y\,(\lambda s.\,\mathtt{cons}\;0\;s)$ read out identically, while $Y\,(\mathtt{cons}\;1)$ differs.
+Equality of the behaviors two solution graphs unfold to is decided by cycle-detecting~\cite{courcelle1983-infinite-trees} bisimulation, the decidable core of rational-tree unification \cite{colmerauer1984-trees} and equirecursive ($\mu$-) type equality \cite{amadio1993-subtyping-recursive-types, brandt1998-coinductive-type-equality}: $Y\,(\mathtt{cons}\;0)$ and $Y\,(\lambda s.\,\mathtt{cons}\;0\;s)$ read out identically, while $Y\,(\mathtt{cons}\;1)$ differs.
 \fi
 
 \paragraph{\bilingual{The metalanguage needs tabling too}{元语言也需要 tabling}}
@@ -1337,9 +1319,9 @@ The generated material behind the three subsections of Section~\ref{sec:applicat
 
 \subsection{\bilingual{Edit Distance: The Term and Its Library}{编辑距离:项及其库}}\label{app:editdistance-code}
 \ifTablambdaChinese
-编辑距离项 $\mathtt{ed}$ 及其由以构建的纯 lambda 库。每条定义只用到它上方的名字,并由源项渲染,因此该列表不会与实现脱节:绑定变量名就是源所携带的那些,而一个库常量按名字显示、而非展开。递归是 $Y$ 组合子,字符码是 BinNat~\cite{mogensen1992-self-interpretation},而 $\mathtt{nil}$ 也是 BinNat 零,因此整个列表是闭合的纯 $\lambda$-演算。
+编辑距离项 $\mathtt{ed}$ 及其由以构建的纯 lambda 库。每条定义只用到它上方的名字,并由源项渲染,因此该列表不会与实现脱节:绑定变量名就是源所携带的那些,而一个库常量按名字显示、而非展开。递归是 $Y$ 组合子,字符码是 BinNat,而 $\mathtt{nil}$ 也是 BinNat 零,因此整个列表是闭合的纯 $\lambda$-演算。
 \else
-The edit-distance term $\mathtt{ed}$ and the pure-lambda library it is built from. Each definition uses only the names above it, and is rendered from the source term, so the listing cannot drift from the implementation: the bound-variable names are the ones the source carries, and a library constant is shown by name rather than expanded. Recursion is the $Y$ combinator, the character codes are BinNats~\cite{mogensen1992-self-interpretation}, and $\mathtt{nil}$ is also the BinNat zero, so the whole listing is closed pure $\lambda$-calculus.
+The edit-distance term $\mathtt{ed}$ and the pure-lambda library it is built from. Each definition uses only the names above it, and is rendered from the source term, so the listing cannot drift from the implementation: the bound-variable names are the ones the source carries, and a library constant is shown by name rather than expanded. Recursion is the $Y$ combinator, the character codes are BinNats, and $\mathtt{nil}$ is also the BinNat zero, so the whole listing is closed pure $\lambda$-calculus.
 \fi
 \input{generated/editdistance-code}
 
